@@ -33,3 +33,6 @@ dist-ssr
 # Deployment files
 netlify.toml
 windsurf_deployment.yaml
+
+# Local Netlify folder
+.netlify
