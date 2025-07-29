@@ -50,6 +50,13 @@ app.use('/api/student', studentRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
+  // Check for production static placeholder first
+  const productionHtmlPath = join(__dirname, '../static-placeholder/production.html');
+  const hasProductionHtml = fs.existsSync(productionHtmlPath);
+  if (hasProductionHtml) {
+    console.log('✅ Found production.html placeholder for fallback');
+  }
+  
   // Handle different deployment environments by checking different possible paths
   const possiblePaths = [
     join(__dirname, '../dist'),          // Standard path from server directory
@@ -75,25 +82,51 @@ if (process.env.NODE_ENV === 'production') {
     }
   }
   
+  // Also check static-placeholder directory for fallback serving
+  const placeholderPath = join(__dirname, '../static-placeholder');
+  if (fs.existsSync(placeholderPath)) {
+    console.log(`✅ Found static placeholder directory at: ${placeholderPath}`);
+    // Serve placeholder files first, then built dist files if available
+    app.use(express.static(placeholderPath));
+  }
+  
+  // If we have built files, serve them too (these will take precedence over placeholders)
   if (staticPath) {
     console.log(`✅ Serving static files from: ${staticPath}`);
     app.use(express.static(staticPath));
-    
-    // Serve index.html for any routes not handled by the API
-    // This allows React Router to handle client-side routing
-    app.get('*', (req, res) => {
-      // Skip API routes
-      if (req.path.startsWith('/api')) {
-        return res.status(404).send('API endpoint not found');
-      }
-      
-      // For all other routes, send the React app's index.html
-      console.log(`Serving index.html for route: ${req.path}`);
-      res.sendFile(join(staticPath, 'index.html'));
-    });
-  } else {
-    console.warn('⚠️ WARNING: Could not find frontend build directory. Static files will not be served.');
   }
+  
+  // Serve appropriate HTML for SPA routes
+  app.get('*', (req, res) => {
+    // Skip API routes
+    if (req.path.startsWith('/api')) {
+      return res.status(404).send('API endpoint not found');
+    }
+    
+    // Try serving the built index.html first
+    if (staticPath) {
+      console.log(`Serving index.html for route: ${req.path}`);
+      return res.sendFile(join(staticPath, 'index.html'));
+    }
+    
+    // If no built files, serve production.html placeholder
+    if (hasProductionHtml) {
+      console.log(`Serving production.html placeholder for route: ${req.path}`);
+      return res.sendFile(productionHtmlPath);
+    }
+    
+    // Last resort - serve basic placeholder or 404
+    const basicPlaceholder = join(placeholderPath, 'index.html');
+    if (fs.existsSync(basicPlaceholder)) {
+      return res.sendFile(basicPlaceholder);
+    } else {
+      return res.status(404).send('Site is currently unavailable. Please check back later.');
+    }
+  });
+  
+  console.log('✅ Static file serving setup complete');
+} else {
+  console.warn('⚠️ Not in production mode - static files will not be served.');
 }
 
 // Setup email transporter

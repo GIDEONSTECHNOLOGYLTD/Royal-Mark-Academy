@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Royal Mark Academy - Modern Education</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background: #f8fafc;
+    }
+    .hero-section {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+      height: 500px;
+      position: relative;
+      overflow: hidden;
+    }
+    .parallax-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.2;
+    }
+    .navbar {
+      background-color: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .animate-fadeIn {
+      animation: fadeIn 1s ease-in-out;
+    }
+    .animate-slideUp {
+      animation: slideUp 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .feature-card {
+      transition: all 0.3s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .news-card {
+      transition: all 0.3s ease;
+    }
+    .news-card:hover {
+      transform: scale(1.02);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar flex items-center justify-between px-4 py-3 md:px-8">
+    <div class="flex items-center">
+      <h1 class="text-2xl font-bold text-blue-900">Royal Mark Academy</h1>
+    </div>
+    <div class="hidden md:flex space-x-6 text-gray-700">
+      <a href="#" class="hover:text-blue-900 transition-colors">Home</a>
+      <a href="#" class="hover:text-blue-900 transition-colors">About</a>
+      <a href="#" class="hover:text-blue-900 transition-colors">Academics</a>
+      <a href="#" class="hover:text-blue-900 transition-colors">Admissions</a>
+      <a href="#" class="hover:text-blue-900 transition-colors">Campus Life</a>
+      <a href="#" class="hover:text-blue-900 transition-colors">Contact</a>
+    </div>
+    <div class="md:hidden">
+      <button class="text-gray-700 focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section flex items-center justify-center">
+    <div class="parallax-bg"></div>
+    <div class="container mx-auto text-center text-white px-4 z-10">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 animate-fadeIn">Welcome to Royal Mark Academy</h1>
+      <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto animate-slideUp">Nurturing future leaders with world-class education since 2014</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#" class="px-8 py-4 bg-yellow-500 text-blue-900 font-bold text-lg rounded-full hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105">
+          Apply Now
+        </a>
+        <a href="#" class="px-8 py-4 border-2 border-white text-white font-bold text-lg rounded-full hover:bg-white hover:text-blue-900 transition-all duration-300">
+          Learn More
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">Why Choose Royal Mark Academy?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="feature-card bg-blue-50 p-6 rounded-lg shadow-md">
+          <div class="text-blue-500 text-4xl mb-4">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-gray-800">Academic Excellence</h3>
+          <p class="text-gray-600">Rigorous curriculum designed to challenge and inspire students to reach their full potential.</p>
+        </div>
+
+        <div class="feature-card bg-blue-50 p-6 rounded-lg shadow-md">
+          <div class="text-blue-500 text-4xl mb-4">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-gray-800">Supportive Community</h3>
+          <p class="text-gray-600">A diverse and inclusive environment where every student feels valued and respected.</p>
+        </div>
+
+        <div class="feature-card bg-blue-50 p-6 rounded-lg shadow-md">
+          <div class="text-blue-500 text-4xl mb-4">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-gray-800">Innovation & Research</h3>
+          <p class="text-gray-600">State-of-the-art facilities and programs that foster curiosity and innovation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- News & Events Section -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">Latest News & Events</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="news-card bg-white rounded-lg shadow overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="News Image" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="font-bold text-xl mb-2">Annual Science Fair Winners</h3>
+            <p class="text-gray-600 mb-4">Congratulations to our students who showcased amazing innovation at this year's Science Fair.</p>
+            <p class="text-sm text-gray-500">June 15, 2025</p>
+          </div>
+        </div>
+        
+        <div class="news-card bg-white rounded-lg shadow overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="News Image" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="font-bold text-xl mb-2">Summer Program Registration</h3>
+            <p class="text-gray-600 mb-4">Registration for our award-winning summer enrichment programs is now open.</p>
+            <p class="text-sm text-gray-500">May 28, 2025</p>
+          </div>
+        </div>
+        
+        <div class="news-card bg-white rounded-lg shadow overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1560523160-754a9e25c68f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2068&q=80" alt="News Image" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="font-bold text-xl mb-2">Arts Festival Showcase</h3>
+            <p class="text-gray-600 mb-4">Join us for an evening celebrating the artistic talents of our students across all grades.</p>
+            <p class="text-sm text-gray-500">May 10, 2025</p>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-10">
+        <a href="#" class="inline-block px-6 py-3 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors">View All News</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-16 bg-blue-900 text-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">What Our Community Says</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-blue-800 p-6 rounded-lg">
+          <div class="text-yellow-400 text-2xl mb-4">❝</div>
+          <p class="mb-4">Royal Mark Academy provided my daughter with not just academic excellence, but a nurturing environment where she could discover her passions and develop as a whole person.</p>
+          <div class="font-bold">- Sarah Johnson, Parent</div>
+        </div>
+        <div class="bg-blue-800 p-6 rounded-lg">
+          <div class="text-yellow-400 text-2xl mb-4">❝</div>
+          <p class="mb-4">The teachers at Royal Mark truly care about each student's success. The individualized attention and rigorous curriculum prepared me well for university and beyond.</p>
+          <div class="font-bold">- Michael Chen, Alumni 2023</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="py-12 bg-gray-50">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold mb-6">Stay Connected</h2>
+      <p class="text-gray-600 mb-8 max-w-2xl mx-auto">Subscribe to our newsletter for the latest updates, events, and news from Royal Mark Academy.</p>
+      <div class="max-w-md mx-auto">
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input type="email" placeholder="Your email address" class="flex-grow px-4 py-3 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button class="px-6 py-3 bg-blue-900 text-white rounded-md hover:bg-blue-800 transition-colors">Subscribe</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-white text-lg font-bold mb-4">Royal Mark Academy</h3>
+          <p class="mb-4">Nurturing future leaders with world-class education since 2014.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-300 hover:text-white transition-colors">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"></path>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.446-1.27.097-2.646 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0112 6.838c.85.004 1.705.114 2.504.336 1.909-1.296 2.747-1.027 2.747-1.027.546 1.377.202 2.394.1 2.646.64.699 1.028 1.591 1.028 2.682 0 3.841-2.337 4.687-4.565 4.934.359.31.678.92.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.577.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"></path>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-white text-lg font-bold mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Academics</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Admissions</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Campus Life</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">News & Events</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white text-lg font-bold mb-4">Resources</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors">Student Portal</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Parent Portal</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Calendar</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Library</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white text-lg font-bold mb-4">Contact Us</h3>
+          <address class="not-italic">
+            <p>123 Education Lane</p>
+            <p>London, UK W1A 1AA</p>
+            <p class="mt-2">Email: info@royalmarkacademy.com</p>
+            <p>Phone: +44 20 1234 5678</p>
+          </address>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-8 pt-8 text-sm text-center">
+        <p>&copy; 2025 Royal Mark Academy. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
