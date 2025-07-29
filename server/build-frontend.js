@@ -10,6 +10,12 @@
 
 /* global process */ // ESLint: define process as global
 import { execSync } from 'child_process';
+/**
+ * Royal Mark Academy Frontend Build Script
+ * This script handles building the React frontend on the server
+ * It attempts multiple methods to ensure the build succeeds
+ */
+
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

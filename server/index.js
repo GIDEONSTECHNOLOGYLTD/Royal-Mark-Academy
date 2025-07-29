@@ -227,20 +227,47 @@ const startServer = async () => {
     setTimeout(() => {
       console.log('🏗️ Starting frontend build process...');
       try {
-        // Run build process through child process to avoid blocking server
-        exec('npm run frontend-build && npm run copy-dist', { 
+        // First ensure all dependencies are installed
+        console.log('📦 Installing build dependencies...');
+        exec('npm install vite @vitejs/plugin-react tailwindcss postcss autoprefixer --no-save', {
           cwd: dirname(__dirname),
           env: { ...process.env, NODE_ENV: 'production' }
-        }, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`❌ Build error: ${error.message}`);
-            return;
+        }, (installError) => {
+          if (installError) {
+            console.error(`❌ Dependency installation error: ${installError.message}`);
+            console.log('⚠️ Continuing with build attempt despite installation error');
           }
-          if (stderr) {
-            console.error(`⚠️ Build stderr: ${stderr}`);
-          }
-          console.log('✅ Frontend build completed!');
-          console.log(stdout);
+          
+          console.log('🛠️ Running frontend build with npx...');
+          // Try to build with npx to ensure we use the locally installed version
+          exec('npx vite build && npm run copy-dist', { 
+            cwd: dirname(__dirname),
+            env: { ...process.env, NODE_ENV: 'production' }
+          }, (error, stdout, stderr) => {
+            if (error) {
+              console.error(`❌ Build error: ${error.message}`);
+              console.log('🔄 Trying alternative build method...');
+              
+              // Try direct node_modules path as fallback
+              exec('node ./node_modules/vite/bin/vite.js build && npm run copy-dist', {
+                cwd: dirname(__dirname),
+                env: { ...process.env, NODE_ENV: 'production' }
+              }, (altError, altStdout) => {
+                if (altError) {
+                  console.error(`❌ Alternative build also failed: ${altError.message}`);
+                  return;
+                }
+                console.log('✅ Frontend build completed with alternative method!');
+                console.log(altStdout);
+              });
+              return;
+            }
+            if (stderr) {
+              console.log(`⚠️ Build stderr (non-fatal): ${stderr}`);
+            }
+            console.log('✅ Frontend build completed successfully!');
+            console.log(stdout);
+          });
         });
       } catch (err) {
         console.error('⚠️ Error starting frontend build:', err.message);
