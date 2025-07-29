@@ -3,6 +3,7 @@ import cors from 'cors';
 import fs from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { buildFrontendIfNeeded } from './deploy-handler.js';
 import nodemailer from 'nodemailer';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
@@ -212,13 +213,28 @@ app.post('/api/application', async (req, res) => {
   }
 });
 
-// Catch-all route in production to serve the frontend
-if (process.env.NODE_ENV === 'production') {
-  app.get('*', (req, res) => {
-    res.sendFile(join(__dirname, '../dist/index.html'));
+// Start the server
+const startServer = async () => {
+  // In production, build frontend files if needed
+  if (process.env.NODE_ENV === 'production') {
+    console.log('🔍 Checking for frontend files...');
+    try {
+      await buildFrontendIfNeeded();
+      console.log('✅ Frontend file check/build complete');
+    } catch (err) {
+      console.error('⚠️ Frontend build warning:', err.message);
+      // Continue starting the server even if build fails
+    }
+  }
+  
+  // Start server
+  const PORT = process.env.PORT || port;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
   });
-}
+};
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// Initialize the server
+startServer().catch(err => {
+  console.error('❌ Failed to start server:', err);
 });
