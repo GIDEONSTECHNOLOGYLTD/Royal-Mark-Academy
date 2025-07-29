@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run copy-dist",
+    "copy-dist": "mkdir -p /opt/render/project/src/dist && cp -r dist/* /opt/render/project/src/dist/ 2>/dev/null || echo 'Not on Render, skipping copy'",
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "node server/index.js",
@@ -13,8 +14,7 @@
     "dev:full": "concurrently \"npm run dev\" \"npm run server:dev\"",
     "seed:admin": "node server/seeders/createAdminUser.js",
     "start": "node server/index.js",
-    "prod:build": "npm run build && npm run start",
-    "render-build": "npm install && npm run build && mkdir -p /opt/render/project/src/dist && cp -r dist/* /opt/render/project/src/dist/ || true"
+    "prod:build": "npm run build && npm run start"
   },
   "dependencies": {
     "axios": "^1.11.0",
