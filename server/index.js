@@ -27,7 +27,9 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? 'https://royalmarkacademy.com' : 'http://localhost:5174',
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://royalmark.netlify.app', 'https://royalmarkacademy.com'] 
+    : ['http://localhost:5173', 'http://localhost:5174'],
   credentials: true
 }));
 app.use(express.json());

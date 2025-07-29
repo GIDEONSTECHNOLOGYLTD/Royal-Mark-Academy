@@ -6,7 +6,7 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 
   (import.meta.env.MODE === 'development' 
     ? 'http://localhost:3000/api' 
-    : 'https://your-backend-server.com/api');
+    : 'https://royal-mark-academy-api.onrender.com/api');
 
 /**
  * Send a contact form message
