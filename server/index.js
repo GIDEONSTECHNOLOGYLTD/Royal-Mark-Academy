@@ -79,19 +79,38 @@ if (process.env.NODE_ENV === 'production') {
     }
   }
   
-  // Also check static-placeholder directory for fallback serving
+  // Set up static file serving with proper priority
+  // 1. First serve from dist directory if it exists (these have highest priority)
+  if (staticPath) {
+    console.log(`✅ Serving static files from: ${staticPath}`);
+    app.use(express.static(staticPath, { index: false }));
+  }
+
+  // 2. Then check static-placeholder directory for fallback serving
   const placeholderPath = join(__dirname, '../static-placeholder');
   if (fs.existsSync(placeholderPath)) {
     console.log(`✅ Found static placeholder directory at: ${placeholderPath}`);
-    // Serve placeholder files first, then built dist files if available
-    app.use(express.static(placeholderPath));
+    app.use(express.static(placeholderPath, { index: false }));
   }
   
-  // If we have built files, serve them too (these will take precedence over placeholders)
-  if (staticPath) {
-    console.log(`✅ Serving static files from: ${staticPath}`);
-    app.use(express.static(staticPath));
-  }
+  // Special handler to debug what's in the directories
+  app.get('/debug-static-files', (req, res) => {
+    const debug = { staticPath: null, placeholderPath: null };
+    
+    if (staticPath && fs.existsSync(staticPath)) {
+      debug.staticPath = fs.readdirSync(staticPath);
+      const assetsPath = join(staticPath, 'assets');
+      if (fs.existsSync(assetsPath)) {
+        debug.staticAssets = fs.readdirSync(assetsPath);
+      }
+    }
+    
+    if (placeholderPath && fs.existsSync(placeholderPath)) {
+      debug.placeholderPath = fs.readdirSync(placeholderPath);
+    }
+    
+    res.json(debug);
+  });
   
   // Serve appropriate HTML for SPA routes
   app.get('*', (req, res) => {
@@ -100,25 +119,52 @@ if (process.env.NODE_ENV === 'production') {
       return res.status(404).send('API endpoint not found');
     }
     
-    // Try serving the built index.html first
-    if (staticPath) {
-      console.log(`Serving index.html for route: ${req.path}`);
-      return res.sendFile(join(staticPath, 'index.html'));
+    // Debug information in response headers
+    res.setHeader('X-RMA-Static-Path', staticPath || 'none');
+    res.setHeader('X-RMA-Placeholder-Path', placeholderPath || 'none');
+    
+    // Define all possible index.html locations
+    const indexPaths = [
+      // Primary location - the pre-built files we committed to git
+      staticPath ? join(staticPath, 'index.html') : null,
+      // Secondary location - the placeholder directory
+      join(placeholderPath, 'index.html'),
+      // Fallback - the production.html file
+      productionHtmlPath,
+      // Last resort - root directory
+      join(__dirname, '../index.html')
+    ].filter(Boolean); // Remove null entries
+    
+    // Try each path in sequence
+    for (const indexPath of indexPaths) {
+      if (fs.existsSync(indexPath)) {
+        console.log(`✅ Serving index.html from: ${indexPath} for route: ${req.path}`);
+        return res.sendFile(indexPath);
+      }
     }
     
-    // If no built files, serve production.html placeholder
-    if (hasProductionHtml) {
-      console.log(`Serving production.html placeholder for route: ${req.path}`);
-      return res.sendFile(productionHtmlPath);
-    }
-    
-    // Last resort - serve basic placeholder or 404
-    const basicPlaceholder = join(placeholderPath, 'index.html');
-    if (fs.existsSync(basicPlaceholder)) {
-      return res.sendFile(basicPlaceholder);
-    } else {
-      return res.status(404).send('Site is currently unavailable. Please check back later.');
-    }
+    // If we've exhausted all options, create a simple response
+    console.error('❌ No index.html found anywhere, sending generated HTML');
+    return res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Royal Mark Academy</title>
+        <style>
+          body { font-family: sans-serif; text-align: center; padding: 50px; }
+          h1 { color: #333; }
+        </style>
+      </head>
+      <body>
+        <h1>Royal Mark Academy</h1>
+        <p>Our site is currently being upgraded with new features.</p>
+        <p>Please check back soon.</p>
+        <button onClick="window.location.reload()">Refresh Now</button>
+      </body>
+      </html>
+    `);
   });
   
   console.log('✅ Static file serving setup complete');
