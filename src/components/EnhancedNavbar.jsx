@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { AnimatePresence, motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { FiMenu, FiX, FiChevronDown, FiSearch, FiUser } from 'react-icons/fi';
 import { FaGraduationCap } from 'react-icons/fa';
@@ -35,20 +34,6 @@ const EnhancedNavbar = () => {
     return () => window.removeEventListener('scroll', throttledScroll);
   }, [handleScroll]);
 
-  // Handle keyboard navigation for accessibility
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        closeDropdowns();
-      } else if (e.key === 'Tab' && searchOpen && searchRef.current && !searchRef.current.contains(e.target)) {
-        closeDropdowns();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [searchOpen, closeDropdowns]);
-
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -62,6 +47,26 @@ const EnhancedNavbar = () => {
     // Clean up
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [searchRef]);
+
+  // Handle keyboard navigation for accessibility
+  const closeDropdowns = useCallback(() => {
+    setActiveDropdown(null);
+    setIsOpen(false);
+    setSearchOpen(false);
+  }, []);
+  
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        closeDropdowns();
+      } else if (e.key === 'Tab' && searchOpen && searchRef.current && !searchRef.current.contains(e.target)) {
+        closeDropdowns();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [searchOpen, closeDropdowns]);
 
   const navLinks = [
     { name: 'Home', path: '/', icon: '🏠' },
@@ -108,12 +113,6 @@ const EnhancedNavbar = () => {
     setActiveDropdown(prev => prev === index ? null : index);
   }, []);
 
-  const closeDropdowns = useCallback(() => {
-    setActiveDropdown(null);
-    setIsOpen(false);
-    setSearchOpen(false);
-  }, []);
-
   return (
     <>
       {/* Top Bar with Quick Access - Hidden on mobile for better UX */}
@@ -153,16 +152,13 @@ const EnhancedNavbar = () => {
       </div>
 
       {/* Main Navigation */}
-      <motion.nav
+      <nav
         aria-label="Main navigation"
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`sticky top-0 z-50 transition-all duration-300 slide-in-animation ${
           scrolled
             ? 'bg-white/95 backdrop-blur-md shadow-lg'
             : 'bg-white/90 backdrop-blur-sm'
         }`}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
@@ -172,13 +168,12 @@ const EnhancedNavbar = () => {
               className="flex items-center space-x-3 group"
               onClick={closeDropdowns}
             >
-              <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.5 }}
-                className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center"
+              <div
+                className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center hover:rotate-logo"
+                style={{ transition: 'transform 0.5s ease' }}
               >
                 <FaGraduationCap className="text-white text-xl" />
-              </motion.div>
+              </div>
               <div>
                 <h1 className="text-xl font-bold text-blue-900">Royal Mark</h1>
                 <p className="text-sm text-blue-700">Academy</p>
@@ -209,28 +204,21 @@ const EnhancedNavbar = () => {
                           }`}
                         />
                       </button>
-                      <AnimatePresence>
-                        {activeDropdown === index && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2"
-                          >
-                            {link.dropdown.map((item) => (
-                              <Link
-                                key={item.path}
-                                to={item.path}
-                                className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                                onClick={closeDropdowns}
-                              >
-                                <span>{item.icon}</span>
-                                <span>{item.name}</span>
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                      {activeDropdown === index && (
+                        <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 fade-in">
+                          {link.dropdown.map((item) => (
+                            <Link
+                              key={item.path}
+                              to={item.path}
+                              className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                              onClick={closeDropdowns}
+                            >
+                              <span>{item.icon}</span>
+                              <span>{item.name}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <NavLink
@@ -287,156 +275,136 @@ const EnhancedNavbar = () => {
             </button>
           </div>
         </div>
+      </nav>
 
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden bg-white border-t border-gray-100"
-              id="mobile-menu"
-              role="region"
-              aria-label="Mobile menu"
-            >
-              <div className="px-4 py-4 space-y-2">
-                {navLinks.map((link, index) => (
-                  <div key={link.name}>
-                    {link.dropdown ? (
-                      <div>
-                        <button
-                          onClick={() => handleDropdown(index)}
-                          className="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                        >
-                          <span className="flex items-center space-x-2">
-                            <span>{link.icon}</span>
-                            <span>{link.name}</span>
-                          </span>
-                          <FiChevronDown
-                            className={`w-4 h-4 transition-transform ${
-                              activeDropdown === index ? 'rotate-180' : ''
-                            }`}
-                          />
-                        </button>
-                        <AnimatePresence>
-                          {activeDropdown === index && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              exit={{ opacity: 0, height: 0 }}
-                              className="pl-8 space-y-1"
-                            >
-                              {link.dropdown.map((item) => (
-                                <Link
-                                  key={item.path}
-                                  to={item.path}
-                                  className="block px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600 rounded-lg transition-colors"
-                                  onClick={closeDropdowns}
-                                >
-                                  <span className="flex items-center space-x-2">
-                                    <span>{item.icon}</span>
-                                    <span>{item.name}</span>
-                                  </span>
-                                </Link>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div
+          className="lg:hidden bg-white border-t border-gray-100 fade-in"
+          id="mobile-menu"
+          role="region"
+          aria-label="Mobile menu"
+        >
+          <div className="px-4 py-4 space-y-2">
+            {navLinks.map((link, index) => (
+              <div key={link.name}>
+                {link.dropdown ? (
+                  <div>
+                    <button
+                      onClick={() => handleDropdown(index)}
+                      className="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                    >
+                      <span className="flex items-center space-x-2">
+                        <span>{link.icon}</span>
+                        <span>{link.name}</span>
+                      </span>
+                      <FiChevronDown
+                        className={`w-4 h-4 transition-transform ${
+                          activeDropdown === index ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                    {activeDropdown === index && (
+                      <div className="pl-8 space-y-1 slide-in-animation">
+                        {link.dropdown.map((item) => (
+                          <Link
+                            key={item.path}
+                            to={item.path}
+                            className="block px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600 rounded-lg transition-colors"
+                            onClick={closeDropdowns}
+                          >
+                            <span className="flex items-center space-x-2">
+                              <span>{item.icon}</span>
+                              <span>{item.name}</span>
+                            </span>
+                          </Link>
+                        ))}
                       </div>
-                    ) : (
-                      <NavLink
-                        to={link.path}
-                        className={({ isActive }) =>
-                          `block px-4 py-3 rounded-lg transition-colors ${
-                            isActive
-                              ? 'text-blue-600 bg-blue-50 font-semibold'
-                              : 'text-gray-700 hover:bg-gray-50'
-                          }`
-                        }
-                        onClick={closeDropdowns}
-                      >
-                        <span className="flex items-center space-x-2">
-                          <span>{link.icon}</span>
-                          <span>{link.name}</span>
-                        </span>
-                      </NavLink>
                     )}
                   </div>
-                ))}
-                <div className="pt-4 border-t border-gray-100 space-y-2">
-                  <Link
-                    to="/admissions"
-                    className="block w-full px-4 py-3 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors text-center"
+                ) : (
+                  <NavLink
+                    to={link.path}
+                    className={({ isActive }) =>
+                      `block px-4 py-3 rounded-lg transition-colors ${
+                        isActive
+                          ? 'text-blue-600 bg-blue-50 font-semibold'
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`
+                    }
                     onClick={closeDropdowns}
                   >
-                    Apply Now
-                  </Link>
-                  <Link
-                    to="/contact"
-                    className="block w-full px-4 py-3 border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition-colors text-center"
-                    onClick={closeDropdowns}
-                  >
-                    Contact Us
-                  </Link>
-                </div>
+                    <span className="flex items-center space-x-2">
+                      <span>{link.icon}</span>
+                      <span>{link.name}</span>
+                    </span>
+                  </NavLink>
+                )}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.nav>
+            ))}
+            <div className="pt-4 border-t border-gray-100 space-y-2">
+              <Link
+                to="/admissions"
+                className="block w-full px-4 py-3 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors text-center"
+                onClick={closeDropdowns}
+              >
+                Apply Now
+              </Link>
+              <Link
+                to="/contact"
+                className="block w-full px-4 py-3 border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition-colors text-center"
+                onClick={closeDropdowns}
+              >
+                Contact Us
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Search Modal */}
-      <AnimatePresence>
-        {searchOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setSearchOpen(false)}
+      {searchOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 fade-in"
+          onClick={() => setSearchOpen(false)}
+        >
+          <div
+            ref={searchRef}
+            className="bg-white rounded-2xl p-6 w-full max-w-2xl slide-in-animation"
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div
-              ref={searchRef}
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl p-6 w-full max-w-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center space-x-3 mb-4" role="search">
-                <label htmlFor="search-input" className="sr-only">Search</label>
-                <div className="relative flex-1">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiSearch className="w-5 h-5 text-gray-400" aria-hidden="true" />
-                  </div>
-                  <input
-                    id="search-input"
-                    type="text"
-                    placeholder="Search for pages, news, events..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    autoComplete="off"
-                    autoFocus
-                    aria-describedby="search-help"
-                  />
+            <div className="flex items-center space-x-3 mb-4" role="search">
+              <label htmlFor="search-input" className="sr-only">Search</label>
+              <div className="relative flex-1">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiSearch className="w-5 h-5 text-gray-400" aria-hidden="true" />
                 </div>
-                <button
-                  onClick={() => setSearchOpen(false)}
-                  className="p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md"
-                  aria-label="Close search"
-                >
-                  <FiX className="w-5 h-5" />
-                </button>
+                <input
+                  id="search-input"
+                  type="text"
+                  placeholder="Search for pages, news, events..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  autoComplete="off"
+                  autoFocus
+                  aria-describedby="search-help"
+                />
               </div>
-              <div id="search-help" className="text-sm text-gray-500 mb-2">
-                Press Enter to search or ESC to close
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <button
+                onClick={() => setSearchOpen(false)}
+                className="p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md"
+                aria-label="Close search"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+            <div id="search-help" className="text-sm text-gray-500 mb-2">
+              Press Enter to search or ESC to close
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

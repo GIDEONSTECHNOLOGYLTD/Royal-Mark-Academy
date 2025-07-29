@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import { Link } from 'react-router-dom';
 import { FaPlay, FaPause, FaChevronRight, FaGraduationCap } from 'react-icons/fa';
 
@@ -80,18 +79,19 @@ const ModernHero = () => {
   return (
     <section className="relative h-screen overflow-hidden">
       {/* Background Images with Parallax Effect */}
-      <AnimatePresence>
+      <div className="relative h-full w-full">
         {slides.map((slide, index) => (
-          <motion.div
+          <div
             key={slide.id}
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ 
+            style={{
               opacity: index === currentSlide ? 1 : 0,
-              scale: index === currentSlide ? 1 + scrollY * 0.0002 : 1.1
+              transform: `scale(${index === currentSlide ? 1 + scrollY * 0.0002 : 1.1})`,
+              transition: 'opacity 1.2s ease-in-out, transform 1.2s ease-in-out',
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
             }}
-            exit={{ opacity: 0, scale: 1.1 }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
-            className="absolute inset-0 w-full h-full"
           >
             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
             <img
@@ -100,29 +100,21 @@ const ModernHero = () => {
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 to-purple-900/20" />
-          </motion.div>
+          </div>
         ))}
-      </AnimatePresence>
+      </div>
 
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(20)].map((_, i) => (
-          <motion.div
+          <div
             key={i}
-            className="absolute w-2 h-2 bg-white/20 rounded-full"
-            animate={{
-              y: [0, -30, 0],
-              x: [0, 20, 0],
-              opacity: [0.3, 0.8, 0.3],
-            }}
-            transition={{
-              duration: 3 + Math.random() * 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
+            className="absolute w-2 h-2 bg-white/20 rounded-full floating-particle"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
+              animationDuration: `${3 + Math.random() * 2}s`,
+              animationDelay: `${Math.random() * 2}s`
             }}
           />
         ))}
@@ -131,81 +123,43 @@ const ModernHero = () => {
       {/* Content Overlay */}
       <div className="relative z-10 h-full flex items-center justify-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentSlide}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-center text-white"
-            >
+          <div key={currentSlide} className="text-center text-white slide-in-animation">
               {/* School Badge */}
-              <motion.div
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: 0.2, duration: 0.8, type: "spring" }}
-                className="mb-6"
-              >
+              <div className="mb-6 badge-animation">
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-yellow-500 rounded-full mb-4">
                   <FaGraduationCap className="text-blue-900 text-3xl" />
                 </div>
-              </motion.div>
+              </div>
 
               {/* Main Title */}
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
-                className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight"
-              >
+              <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight title-animation">
                 <span className="bg-gradient-to-r from-white to-yellow-300 bg-clip-text text-transparent">
                   {slides[currentSlide].title}
                 </span>
-              </motion.h1>
+              </h1>
 
               {/* Subtitle */}
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.8 }}
-                className="text-xl md:text-2xl mb-4 text-gray-200 font-light"
-              >
+              <p className="text-xl md:text-2xl mb-4 text-gray-200 font-light subtitle-animation">
                 {slides[currentSlide].subtitle}
-              </motion.p>
+              </p>
 
               {/* Description */}
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.8 }}
-                className="text-lg md:text-xl mb-8 max-w-3xl mx-auto text-gray-300"
-              >
+              <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto text-gray-300 description-animation">
                 {slides[currentSlide].description}
-              </motion.p>
+              </p>
 
               {/* Stats */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1, duration: 0.8 }}
-                className="flex flex-wrap justify-center gap-8 mb-12"
-              >
+              <div className="flex flex-wrap justify-center gap-8 mb-12 stats-animation">
                 {Object.entries(slides[currentSlide].stats).map(([key, value]) => (
                   <div key={key} className="text-center">
                     <div className="text-3xl font-bold text-yellow-400">{value}</div>
                     <div className="text-sm text-gray-300 uppercase tracking-wider">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
                   </div>
                 ))}
-              </motion.div>
+              </div>
 
               {/* CTA Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2, duration: 0.8 }}
-                className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-              >
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center cta-animation">
                 <Link
                   to={slides[currentSlide].ctaLink}
                   className="group inline-flex items-center px-8 py-4 bg-yellow-500 text-blue-900 font-bold text-lg rounded-full hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
@@ -219,9 +173,8 @@ const ModernHero = () => {
                 >
                   Apply Now
                 </Link>
-              </motion.div>
-            </motion.div>
-          </AnimatePresence>
+              </div>
+          </div>
         </div>
       </div>
 
@@ -280,15 +233,11 @@ const ModernHero = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <motion.div
-        className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      >
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 bounce-animation">
         <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
           <div className="w-1 h-3 bg-white/70 rounded-full mt-2" />
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 };

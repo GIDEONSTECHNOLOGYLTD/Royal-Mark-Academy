@@ -17,6 +17,86 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* CSS Animations to replace Framer Motion */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Hero Animations */
+.floating-particle {
+  animation: float 3s ease-in-out infinite;
+  opacity: 0.3;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+  50% { transform: translate(20px, -30px); opacity: 0.8; }
+}
+
+.slide-in-animation {
+  opacity: 0;
+  animation: slideIn 0.8s ease-out forwards;
+}
+
+@keyframes slideIn {
+  0% { opacity: 0; transform: translateY(50px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.badge-animation {
+  animation: badgeAppear 0.8s 0.2s both;
+}
+
+@keyframes badgeAppear {
+  0% { opacity: 0; transform: scale(0) rotate(-180deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+.title-animation {
+  opacity: 0;
+  animation: fadeUp 0.8s 0.4s forwards;
+}
+
+.subtitle-animation {
+  opacity: 0;
+  animation: fadeUp 0.8s 0.6s forwards;
+}
+
+.description-animation {
+  opacity: 0;
+  animation: fadeUp 0.8s 0.8s forwards;
+}
+
+.stats-animation {
+  opacity: 0;
+  animation: fadeUp 0.8s 1s forwards;
+}
+
+.cta-animation {
+  opacity: 0;
+  animation: fadeUp 0.8s 1.2s forwards;
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.bounce-animation {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 10px); }
+}
+
 a {
   font-weight: 500;
   color: #646cff;
