@@ -6,9 +6,6 @@ import { fileURLToPath } from 'url';
 // eslint-disable-next-line no-unused-vars
 import { buildFrontendIfNeeded, checkFrontendFiles } from './deploy-handler.js';
 
-// Import child_process for spawning build process
-import { exec } from 'child_process';
-
 import nodemailer from 'nodemailer';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
@@ -253,66 +250,24 @@ app.post('/api/application', async (req, res) => {
 
 // Start the server
 const startServer = async () => {
-  // Always trigger frontend build on server start in production
-  if (process.env.NODE_ENV === 'production') {
-    console.log('🔄 Triggering frontend build on server start...');
-    // Start build in background
-    setTimeout(() => {
-      console.log('🏗️ Starting frontend build process...');
-      try {
-        // First ensure all dependencies are installed
-        console.log('📦 Installing build dependencies...');
-        exec('npm install vite @vitejs/plugin-react tailwindcss postcss autoprefixer --no-save', {
-          cwd: dirname(__dirname),
-          env: { ...process.env, NODE_ENV: 'production' }
-        }, (installError) => {
-          if (installError) {
-            console.error(`❌ Dependency installation error: ${installError.message}`);
-            console.log('⚠️ Continuing with build attempt despite installation error');
-          }
-          
-          console.log('🛠️ Running frontend build with npx...');
-          // Try to build with npx to ensure we use the locally installed version
-          exec('npx vite build && npm run copy-dist', { 
-            cwd: dirname(__dirname),
-            env: { ...process.env, NODE_ENV: 'production' }
-          }, (error, stdout, stderr) => {
-            if (error) {
-              console.error(`❌ Build error: ${error.message}`);
-              console.log('🔄 Trying alternative build method...');
-              
-              // Try direct node_modules path as fallback
-              exec('node ./node_modules/vite/bin/vite.js build && npm run copy-dist', {
-                cwd: dirname(__dirname),
-                env: { ...process.env, NODE_ENV: 'production' }
-              }, (altError, altStdout) => {
-                if (altError) {
-                  console.error(`❌ Alternative build also failed: ${altError.message}`);
-                  return;
-                }
-                console.log('✅ Frontend build completed with alternative method!');
-                console.log(altStdout);
-              });
-              return;
-            }
-            if (stderr) {
-              console.log(`⚠️ Build stderr (non-fatal): ${stderr}`);
-            }
-            console.log('✅ Frontend build completed successfully!');
-            console.log(stdout);
-          });
-        });
-      } catch (err) {
-        console.error('⚠️ Error starting frontend build:', err.message);
-      }
-    }, 5000); // Wait 5 seconds after server start to begin build
-  }
+  // We'll no longer trigger frontend builds on server start to avoid crashes
+  // Frontend files should be built during the build phase instead
+  console.log('🌐 Starting server without triggering frontend build');
   
   // Start server
   const PORT = process.env.PORT || port;
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  try {
+    app.listen(PORT, () => {
+      console.log(`✅ Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error(`❌ Failed to start server on port ${PORT}:`, error);
+    // Try an alternative port if the primary one fails
+    const alternatePort = parseInt(PORT) + 1;
+    app.listen(alternatePort, () => {
+      console.log(`⚠️ Server running on alternate port ${alternatePort}`);
+    });
+  }
 };
 
 // Initialize the server

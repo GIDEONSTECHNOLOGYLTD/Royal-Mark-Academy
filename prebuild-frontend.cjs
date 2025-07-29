@@ -1,16 +1,37 @@
 #!/usr/bin/env node
 
-// CommonJS build script for Royal Mark Academy
-// This script uses CommonJS to avoid ESM-related issues on Render
+// CommonJS build script for Royal Mark Academy with resilient fallback
+// This script ensures that static content is always available
 
-const { execSync } = require('child_process');
+const { execSync, exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
 // Get project root directory
 const projectDir = process.cwd();
+let buildSuccess = false;
 
 console.log('=============== Royal Mark Academy CommonJS Build ===============');
+console.log(`Build running in ${projectDir}`);
+
+// Ensure static placeholder files are available
+const staticPlaceholderDir = path.join(projectDir, 'static-placeholder');
+const renderDistDir = '/opt/render/project/src/dist';
+
+// First ensure the Render dist directory exists and has static files
+console.log('📁 Setting up static files first to ensure site availability');
+try {
+  // Create Render dist directory
+  execSync(`mkdir -p ${renderDistDir}`, { stdio: 'inherit' });
+  
+  // Copy static placeholder files
+  console.log(`📋 Copying placeholder files to ${renderDistDir}...`);
+  execSync(`cp -r ${staticPlaceholderDir}/* ${renderDistDir}`, { stdio: 'inherit' });
+  console.log('✅ Placeholder files copied successfully');
+} catch (error) {
+  console.error(`⚠️ Error setting up static files: ${error.message}`);
+  console.log('Continuing with build attempt...');
+}
 
 // Create .env.production file
 console.log('🔑 Creating .env.production file...');
