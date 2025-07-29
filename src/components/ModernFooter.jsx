@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import { 
   FaFacebookF, 
   FaTwitter, 
@@ -45,6 +46,7 @@ const ModernFooter = () => {
     { name: 'Student Portal', path: '/student' },
   ];
 
+  // Using this in the Admission section below
   const admissionLinks = [
     { name: 'How to Apply', path: '/admissions#apply' },
     { name: 'Requirements', path: '/admissions#requirements' },
@@ -202,6 +204,33 @@ const ModernFooter = () => {
               <h4 className="text-lg font-semibold mb-4 text-yellow-400">Academics</h4>
               <ul className="space-y-2">
                 {academicLinks.map((link, index) => (
+                  <motion.li
+                    key={link.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Link
+                      to={link.path}
+                      className="text-gray-300 hover:text-yellow-400 transition-colors duration-300 flex items-center space-x-2"
+                    >
+                      <span className="w-1 h-1 bg-yellow-400 rounded-full"></span>
+                      <span>{link.name}</span>
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+
+            {/* Admissions Links */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+            >
+              <h4 className="text-lg font-semibold mb-4 text-yellow-400">Admissions</h4>
+              <ul className="space-y-2">
+                {admissionLinks.map((link, index) => (
                   <motion.li
                     key={link.name}
                     initial={{ opacity: 0, x: -20 }}

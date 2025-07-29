@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { AnimatePresence, motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { FiMenu, FiX, FiChevronDown, FiSearch, FiUser } from 'react-icons/fi';
 import { FaGraduationCap } from 'react-icons/fa';
@@ -13,23 +13,55 @@ const EnhancedNavbar = () => {
   const location = useLocation();
   const searchRef = useRef(null);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+  // Throttle scroll handler for better performance
+  const handleScroll = useCallback(() => {
+    setScrolled(window.scrollY > 20);
   }, []);
 
+  // Debounce scroll event for better performance
+  useEffect(() => {
+    const throttledScroll = () => {
+      let ticking = false;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', throttledScroll, { passive: true });
+    return () => window.removeEventListener('scroll', throttledScroll);
+  }, [handleScroll]);
+
+  // Handle keyboard navigation for accessibility
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        closeDropdowns();
+      } else if (e.key === 'Tab' && searchOpen && searchRef.current && !searchRef.current.contains(e.target)) {
+        closeDropdowns();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [searchOpen, closeDropdowns]);
+
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setSearchOpen(false);
       }
     };
+    
+    // Add when mounted
     document.addEventListener('mousedown', handleClickOutside);
+    // Clean up
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [searchRef]);
 
   const navLinks = [
     { name: 'Home', path: '/', icon: '🏠' },
@@ -72,19 +104,20 @@ const EnhancedNavbar = () => {
     { name: 'Contact', path: '/contact', icon: '📞' },
   ];
 
-  const handleDropdown = (index) => {
-    setActiveDropdown(activeDropdown === index ? null : index);
-  };
+  const handleDropdown = useCallback((index) => {
+    setActiveDropdown(prev => prev === index ? null : index);
+  }, []);
 
-  const closeDropdowns = () => {
+  const closeDropdowns = useCallback(() => {
     setActiveDropdown(null);
     setIsOpen(false);
-  };
+    setSearchOpen(false);
+  }, []);
 
   return (
     <>
-      {/* Top Bar with Quick Access */}
-      <div className="bg-blue-900 text-white text-sm py-2 px-4">
+      {/* Top Bar with Quick Access - Hidden on mobile for better UX */}
+      <div className="hidden md:block bg-blue-900 text-white text-sm py-2 px-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-6">
             <span className="flex items-center">
@@ -121,6 +154,7 @@ const EnhancedNavbar = () => {
 
       {/* Main Navigation */}
       <motion.nav
+        aria-label="Main navigation"
         className={`sticky top-0 z-50 transition-all duration-300 ${
           scrolled
             ? 'bg-white/95 backdrop-blur-md shadow-lg'
@@ -222,13 +256,15 @@ const EnhancedNavbar = () => {
             <div className="hidden lg:flex items-center space-x-3">
               <Link
                 to="/admissions"
-                className="px-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors"
+                className="px-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+                aria-label="Apply for admissions"
               >
                 Apply Now
               </Link>
               <Link
                 to="/contact"
-                className="px-4 py-2 border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+                className="px-4 py-2 border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                aria-label="Contact us"
               >
                 Contact Us
               </Link>
@@ -236,9 +272,16 @@ const EnhancedNavbar = () => {
 
             {/* Mobile Menu Button */}
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-              aria-label="Toggle menu"
+              onClick={() => {
+                setIsOpen(!isOpen);
+                if (isOpen) {
+                  setSearchOpen(false);
+                }
+              }}
+              className="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
             >
               {isOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
             </button>
@@ -253,6 +296,9 @@ const EnhancedNavbar = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               className="lg:hidden bg-white border-t border-gray-100"
+              id="mobile-menu"
+              role="region"
+              aria-label="Mobile menu"
             >
               <div className="px-4 py-4 space-y-2">
                 {navLinks.map((link, index) => (
@@ -358,25 +404,34 @@ const EnhancedNavbar = () => {
               className="bg-white rounded-2xl p-6 w-full max-w-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center space-x-3 mb-4">
-                <FiSearch className="w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search for pages, news, events..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 outline-none text-lg"
-                  autoFocus
-                />
+              <div className="flex items-center space-x-3 mb-4" role="search">
+                <label htmlFor="search-input" className="sr-only">Search</label>
+                <div className="relative flex-1">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiSearch className="w-5 h-5 text-gray-400" aria-hidden="true" />
+                  </div>
+                  <input
+                    id="search-input"
+                    type="text"
+                    placeholder="Search for pages, news, events..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    autoComplete="off"
+                    autoFocus
+                    aria-describedby="search-help"
+                  />
+                </div>
                 <button
                   onClick={() => setSearchOpen(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md"
+                  aria-label="Close search"
                 >
                   <FiX className="w-5 h-5" />
                 </button>
               </div>
-              <div className="text-sm text-gray-500">
-                Press ESC to close or start typing to search...
+              <div id="search-help" className="text-sm text-gray-500 mb-2">
+                Press Enter to search or ESC to close
               </div>
             </motion.div>
           </motion.div>
