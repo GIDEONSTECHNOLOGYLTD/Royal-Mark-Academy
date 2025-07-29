@@ -1,12 +1,11 @@
-import { BrowserRouter as Router, Routes, Route, Link, NavLink, useLocation } from "react-router-dom";
-import { useState, useEffect, Suspense, lazy } from "react";
-import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import { useEffect, Suspense, lazy } from "react";
 import LoadingSpinner from "./components/LoadingSpinner";
-import logo from "./assets/logo.png";
+import EnhancedNavbar from "./components/EnhancedNavbar";
+import ModernFooter from "./components/ModernFooter";
+import EnhancedHome from "./pages/EnhancedHome";
 
 // Lazy load components for better performance
-const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
 const Admissions = lazy(() => import('./pages/Admissions'));
 const Academics = lazy(() => import('./pages/Academics'));
@@ -28,370 +27,23 @@ const ScrollToTop = () => {
   return null;
 };
 
-function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [scrolled]);
-
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { 
-      name: 'About', 
-      path: '/about',
-      dropdown: [
-        { name: 'Our History', path: '/about#history' },
-        { name: 'Our Team', path: '/about#team' },
-        { name: 'Mission & Vision', path: '/about#mission' },
-      ]
-    },
-    { 
-      name: 'Academics', 
-      path: '/academics',
-      dropdown: [
-        { name: 'Curriculum', path: '/academics#curriculum' },
-        { name: 'Departments', path: '/academics#departments' },
-        { name: 'Academic Calendar', path: '/academics#calendar' },
-      ]
-    },
-    { name: 'Admissions', path: '/admissions' },
-    { name: 'Facilities', path: '/facilities' },
-    { name: 'News & Events', path: '/news-events' },
-    { name: 'Gallery', path: '/gallery' },
-    { name: 'Student Portal', path: '/student' },
-  ];
-
-  const toggleDropdown = (index) => {
-    setActiveDropdown(activeDropdown === index ? null : index);
-  };
-
-  return (
-    <>
-      {/* Top Announcement Bar */}
-      <div className="bg-yellow-500 text-blue-900 text-sm py-2 px-4 text-center font-medium">
-        🎓 Admissions for 2024/2025 Academic Session are now open! &nbsp;
-        <a href="/admissions" className="font-bold underline hover:text-blue-800">Apply Now →</a>
-        &nbsp;|&nbsp;
-        <a href="/student" className="font-bold underline hover:text-blue-800">Student Portal →</a>
-      </div>
-      
-      <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-white/90 md:bg-white/80 backdrop-blur-md'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-24">
-            {/* Enhanced Logo */}
-            <div className="flex-shrink-0">
-              <Link to="/" className="flex items-center group">
-                <div className="relative overflow-hidden rounded-full border-2 border-blue-600 p-0.5 transition-all duration-300 group-hover:border-yellow-500 group-hover:shadow-lg">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-700 opacity-10 group-hover:opacity-20 transition-opacity duration-300"></div>
-                  <img className="h-14 w-auto relative z-10" src={logo} alt="Royal Mark Academy" />
-                </div>
-                <div className="ml-3">
-                  <h1 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-indigo-900 group-hover:from-blue-700 group-hover:to-indigo-800 transition-all duration-300">Royal Mark Academy</h1>
-                  <p className="text-xs font-medium tracking-wider text-blue-700 group-hover:text-blue-600 transition-all duration-300">Est. 2014 • Excellence in Education</p>
-                </div>
-              </Link>
-            </div>
-
-            {/* Desktop Navigation */}
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-center space-x-8">
-                {navLinks.map((item, index) => (
-                  <div key={item.name} className="relative group">
-                    <div className="flex items-center">
-                      <NavLink
-                        to={item.path}
-                        className={({ isActive }) => 
-                          `px-3 py-2 text-sm font-medium ${isActive ? 'text-blue-700 font-bold' : 'text-gray-700 hover:text-blue-600'}`
-                        }
-                      >
-                        {item.name}
-                      </NavLink>
-                      {item.dropdown && (
-                        <button 
-                          onClick={() => toggleDropdown(index)}
-                          className="ml-1 text-gray-500 hover:text-blue-600 focus:outline-none"
-                        >
-                          <FiChevronDown className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
-                    
-                    {/* Dropdown Menu */}
-                    {item.dropdown && (
-                      <div 
-                        className={`absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none transition-all duration-200 ${activeDropdown === index ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
-                      >
-                        <div className="py-1">
-                          {item.dropdown.map((subItem) => (
-                            <NavLink
-                              key={subItem.name}
-                              to={subItem.path}
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-                              onClick={() => setActiveDropdown(null)}
-                            >
-                              {subItem.name}
-                            </NavLink>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-                <Link
-                  to="/contact"
-                  className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                >
-                  Contact Us
-                </Link>
-              </div>
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden flex items-center">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-                aria-expanded="false"
-              >
-                <span className="sr-only">Open main menu</span>
-                {isOpen ? (
-                  <FiX className="block h-6 w-6" aria-hidden="true" />
-                ) : (
-                  <FiMenu className="block h-6 w-6" aria-hidden="true" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile menu */}
-        <div className={`md:hidden ${isOpen ? 'block' : 'hidden'}`}>
-          <div className="pt-2 pb-3 space-y-1 bg-white shadow-lg">
-            {navLinks.map((item) => (
-              <div key={item.name}>
-                <NavLink
-                  to={item.path}
-                  className="block px-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.name}
-                </NavLink>
-                {item.dropdown && item.dropdown.map((subItem) => (
-                  <NavLink
-                    key={subItem.name}
-                    to={subItem.path}
-                    className="block pl-8 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {subItem.name}
-                  </NavLink>
-                ))}
-              </div>
-            ))}
-            <div className="px-4 pt-4 pb-2 border-t border-gray-200">
-              <Link
-                to="/contact"
-                className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-800"
-                onClick={() => setIsOpen(false)}
-              >
-                Contact Us
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-    </>
-  );
-}
-
-function Footer() {
-  const quickLinks = [
-    { name: 'About Us', href: '/about' },
-    { name: 'Academics', href: '/academics' },
-    { name: 'Admissions', href: '/admissions' },
-    { name: 'Facilities', href: '/facilities' },
-    { name: 'News & Events', href: '/news-events' },
-    { name: 'Gallery', href: '/gallery' },
-    { name: 'Contact Us', href: '/contact' },
-  ];
-
-  const contactInfo = [
-    { 
-      icon: (
-        <svg className="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      ),
-      text: '123 School Road, Agbetu, Odeda, Ogun State, Nigeria'
-    },
-    { 
-      icon: (
-        <svg className="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-        </svg>
-      ),
-      text: '+234 123 456 7890'
-    },
-    { 
-      icon: (
-        <svg className="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      ),
-      text: 'info@royalmarkacademy.edu.ng'
-    },
-  ];
-
-  return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* School Info */}
-          <div>
-            <div className="flex items-center">
-              <img className="h-12 w-auto" src={logo} alt="Royal Mark Academy" />
-              <div className="ml-3">
-                <h3 className="text-lg font-bold text-white">Royal Mark Academy</h3>
-                <p className="mt-1 text-sm text-gray-300">Excellence in Education</p>
-              </div>
-            </div>
-            <p className="mt-4 text-sm text-gray-300">
-              Providing quality education that nurtures the whole child - academically, socially, and emotionally since our founding in 2014 at Number 1 Elepa Road, Odeda, Abeokuta.
-            </p>
-            <div className="mt-4 flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white">
-                <span className="sr-only">Facebook</span>
-                <FaFacebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white">
-                <span className="sr-only">Twitter</span>
-                <FaTwitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white">
-                <span className="sr-only">Instagram</span>
-                <FaInstagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white">
-                <span className="sr-only">YouTube</span>
-                <FaYoutube className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider">Quick Links</h3>
-            <ul className="mt-4 space-y-2">
-              {quickLinks.map((item) => (
-                <li key={item.name}>
-                  <Link to={item.href} className="text-base text-gray-300 hover:text-white">
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider">Contact Us</h3>
-            <div className="mt-4 space-y-3">
-              {contactInfo.map((item, index) => (
-                <div key={index} className="flex items-start">
-                  <div className="flex-shrink-0 mt-1">
-                    {item.icon}
-                  </div>
-                  <p className="ml-3 text-base text-gray-300">{item.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Newsletter */}
-          <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider">Newsletter</h3>
-            <p className="mt-4 text-sm text-gray-300">
-              Subscribe to our newsletter to receive updates on school news and events.
-            </p>
-            <form className="mt-4 sm:flex">
-              <label htmlFor="email-address" className="sr-only">Email address</label>
-              <input
-                id="email-address"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="w-full px-4 py-2 border border-transparent rounded-md text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                placeholder="Enter your email"
-              />
-              <div className="mt-3 rounded-md shadow sm:mt-0 sm:ml-3 sm:flex-shrink-0">
-                <button
-                  type="submit"
-                  className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  Subscribe
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-        
-        {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-gray-700">
-          <div className="md:flex md:items-center md:justify-between">
-            <div className="flex justify-center md:justify-start space-x-6">
-              <a href="#" className="text-gray-400 hover:text-gray-300">
-                <span className="sr-only">Privacy Policy</span>
-                <span className="text-sm">Privacy Policy</span>
-              </a>
-              <a href="#" className="text-gray-400 hover:text-gray-300">
-                <span className="sr-only">Terms of Service</span>
-                <span className="text-sm">Terms of Service</span>
-              </a>
-              <a href="#" className="text-gray-400 hover:text-gray-300">
-                <span className="sr-only">Sitemap</span>
-                <span className="text-sm">Sitemap</span>
-              </a>
-            </div>
-            <p className="mt-8 text-base text-center text-gray-400 md:mt-0">
-              &copy; {new Date().getFullYear()} Royal Mark Academy. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 function App() {
   return (
     <Router>
       <div className="min-h-screen flex flex-col">
-        <Navbar />
+        <EnhancedNavbar />
         <main className="flex-grow">
           <Suspense fallback={
             <div className="flex items-center justify-center min-h-[60vh]">
               <div className="text-center">
-                <img src="/images/royal-mark-logo.png" alt="Royal Mark Academy" className="mx-auto h-16 w-auto mb-4" />
-                <LoadingSpinner size="xl" />
+                <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading...</p>
               </div>
             </div>
           }>
             <ScrollToTop />
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<EnhancedHome />} />
               <Route path="/about" element={<About />} />
               <Route path="/academics" element={<Academics />} />
               <Route path="/admissions" element={<Admissions />} />
@@ -410,7 +62,7 @@ function App() {
                     <p className="text-gray-600 mb-6">The page you're looking for doesn't exist or has been moved.</p>
                     <Link 
                       to="/" 
-                      className="bg-blue-700 hover:bg-blue-800 text-white font-medium px-6 py-2 rounded-md transition-colors"
+                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
                     >
                       Return Home
                     </Link>
@@ -420,7 +72,7 @@ function App() {
             </Routes>
           </Suspense>
         </main>
-        <Footer />
+        <ModernFooter />
       </div>
     </Router>
   );
