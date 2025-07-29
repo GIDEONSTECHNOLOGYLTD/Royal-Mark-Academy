@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npx vite build && npm run copy-dist",
+    "build": "node server/build-frontend.js",
     "copy-dist": "mkdir -p /opt/render/project/src/dist && cp -r dist/* /opt/render/project/src/dist/ 2>/dev/null || echo 'Not on Render, skipping copy'",
     "render-build": "node render-build.js",
     "lint": "eslint .",
