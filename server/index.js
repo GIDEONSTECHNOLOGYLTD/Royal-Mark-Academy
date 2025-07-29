@@ -6,9 +6,8 @@ import { fileURLToPath } from 'url';
 // eslint-disable-next-line no-unused-vars
 import { buildFrontendIfNeeded, checkFrontendFiles } from './deploy-handler.js';
 
-// Flag to track if we've already started building the frontend
-let frontendBuildInProgress = false;
-let frontendBuilt = false;
+// Import child_process for spawning build process
+import { exec } from 'child_process';
 
 import nodemailer from 'nodemailer';
 import cookieParser from 'cookie-parser';
@@ -221,23 +220,32 @@ app.post('/api/application', async (req, res) => {
 
 // Start the server
 const startServer = async () => {
-  // In production, build frontend files if needed
-  if (process.env.NODE_ENV === 'production' && !frontendBuilt) {
-    if (!frontendBuildInProgress) {
-      frontendBuildInProgress = true;
+  // Always trigger frontend build on server start in production
+  if (process.env.NODE_ENV === 'production') {
+    console.log('🔄 Triggering frontend build on server start...');
+    // Start build in background
+    setTimeout(() => {
+      console.log('🏗️ Starting frontend build process...');
       try {
-        await buildFrontendIfNeeded();
-        frontendBuilt = true;
-        console.log('✅ Frontend file check/build complete');
+        // Run build process through child process to avoid blocking server
+        exec('npm run frontend-build && npm run copy-dist', { 
+          cwd: dirname(__dirname),
+          env: { ...process.env, NODE_ENV: 'production' }
+        }, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`❌ Build error: ${error.message}`);
+            return;
+          }
+          if (stderr) {
+            console.error(`⚠️ Build stderr: ${stderr}`);
+          }
+          console.log('✅ Frontend build completed!');
+          console.log(stdout);
+        });
       } catch (err) {
-        console.error('⚠️ Frontend build warning:', err.message);
-        // Continue starting the server even if build fails
-      } finally {
-        frontendBuildInProgress = false;
+        console.error('⚠️ Error starting frontend build:', err.message);
       }
-    } else {
-      console.log('ℹ️ Frontend build already in progress');
-    }
+    }, 5000); // Wait 5 seconds after server start to begin build
   }
   
   // Start server
