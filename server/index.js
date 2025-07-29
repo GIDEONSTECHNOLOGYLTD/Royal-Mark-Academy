@@ -79,19 +79,21 @@ if (process.env.NODE_ENV === 'production') {
     }
   }
   
-  // Set up static file serving with proper priority
-  // 1. First serve from dist directory if it exists (these have highest priority)
-  if (staticPath) {
-    console.log(`✅ Serving static files from: ${staticPath}`);
-    app.use(express.static(staticPath, { index: false }));
-  }
-
-  // 2. Then check static-placeholder directory for fallback serving
+    // Define placeholder path for reference (staticPath is already defined above)
   const placeholderPath = join(__dirname, '../static-placeholder');
-  if (fs.existsSync(placeholderPath)) {
-    console.log(`✅ Found static placeholder directory at: ${placeholderPath}`);
-    app.use(express.static(placeholderPath, { index: false }));
-  }
+
+  // Configure CORS for API-only server to allow requests from Netlify
+  const corsOptions = {
+    origin: ['https://royal-mark-academy.netlify.app', 'http://localhost:5173'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  };
+  
+  // Use CORS middleware
+  app.use(cors(corsOptions));
+  console.log('✅ CORS configured for API server');
+  console.log('✅ Server configured as API-only for Netlify frontend');
   
   // Special handler to debug what's in the directories
   app.get('/debug-static-files', (req, res) => {
@@ -112,59 +114,40 @@ if (process.env.NODE_ENV === 'production') {
     res.json(debug);
   });
   
-  // Serve appropriate HTML for SPA routes
-  app.get('*', (req, res) => {
-    // Skip API routes
-    if (req.path.startsWith('/api')) {
-      return res.status(404).send('API endpoint not found');
-    }
-    
-    // Debug information in response headers
-    res.setHeader('X-RMA-Static-Path', staticPath || 'none');
-    res.setHeader('X-RMA-Placeholder-Path', placeholderPath || 'none');
-    
-    // Define all possible index.html locations
-    const indexPaths = [
-      // Primary location - the pre-built files we committed to git
-      staticPath ? join(staticPath, 'index.html') : null,
-      // Secondary location - the placeholder directory
-      join(placeholderPath, 'index.html'),
-      // Fallback - the production.html file
-      productionHtmlPath,
-      // Last resort - root directory
-      join(__dirname, '../index.html')
-    ].filter(Boolean); // Remove null entries
-    
-    // Try each path in sequence
-    for (const indexPath of indexPaths) {
-      if (fs.existsSync(indexPath)) {
-        console.log(`✅ Serving index.html from: ${indexPath} for route: ${req.path}`);
-        return res.sendFile(indexPath);
-      }
-    }
-    
-    // If we've exhausted all options, create a simple response
-    console.error('❌ No index.html found anywhere, sending generated HTML');
-    return res.send(`
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Royal Mark Academy</title>
-        <style>
-          body { font-family: sans-serif; text-align: center; padding: 50px; }
-          h1 { color: #333; }
-        </style>
-      </head>
-      <body>
-        <h1>Royal Mark Academy</h1>
-        <p>Our site is currently being upgraded with new features.</p>
-        <p>Please check back soon.</p>
-        <button onClick="window.location.reload()">Refresh Now</button>
-      </body>
-      </html>
-    `);
+  // API documentation route
+  app.get('/api', (req, res) => {
+    res.json({
+      name: 'Royal Mark Academy API',
+      version: '1.0.0',
+      description: 'API endpoints for Royal Mark Academy website',
+      endpoints: [
+        { path: '/api/contact', method: 'POST', description: 'Send a contact form submission' },
+        { path: '/api/admissions', method: 'POST', description: 'Submit an admission application' },
+        { path: '/api/events', method: 'GET', description: 'Get upcoming school events' },
+        { path: '/api/news', method: 'GET', description: 'Get latest school news' }
+      ],
+      frontend: 'https://royal-mark-academy.netlify.app',
+      status: 'online'
+    });
+  });
+
+  // Handle 404s for API routes
+  app.use('/api/*', (req, res) => {
+    res.status(404).json({ 
+      error: 'API endpoint not found',
+      path: req.path,
+      availableEndpoints: '/api'
+    });
+  });
+  
+  // All other routes - respond with API info for split deployment
+  app.use('*', (req, res) => {
+    res.json({
+      message: 'Royal Mark Academy API Server',
+      note: 'The frontend has been moved to Netlify for optimal performance',
+      frontendUrl: 'https://royal-mark-academy.netlify.app',
+      apiDocs: `${req.protocol}://${req.get('host')}/api`
+    });
   });
   
   console.log('✅ Static file serving setup complete');
