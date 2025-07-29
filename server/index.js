@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import fs from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import nodemailer from 'nodemailer';
@@ -43,8 +44,37 @@ app.use('/api/student', studentRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  const parentDir = dirname(__dirname);
-  app.use(express.static(join(parentDir, 'dist')));
+  // Handle different deployment environments by checking different possible paths
+  const possiblePaths = [
+    join(__dirname, '../dist'),          // Standard path from server directory
+    join(dirname(__dirname), 'dist'),    // From project root
+    '/opt/render/project/src/dist'       // Render's default path
+  ];
+  
+  // Find the first path that exists
+  let staticPath = null;
+  for (const path of possiblePaths) {
+    try {
+      const stats = fs.statSync(join(path, 'index.html'));
+      if (stats.isFile()) {
+        staticPath = path;
+        break;
+      }
+    } catch (error) {
+      console.log(`Path ${path} not found, trying next... (${error.code})`);
+      // Log more details at debug level
+      if (process.env.DEBUG) {
+        console.debug(`Full error: ${error.message}`);
+      }
+    }
+  }
+  
+  if (staticPath) {
+    console.log(`Serving static files from: ${staticPath}`);
+    app.use(express.static(staticPath));
+  } else {
+    console.warn('WARNING: Could not find frontend build directory. Static files will not be served.');
+  }
 }
 
 // Setup email transporter

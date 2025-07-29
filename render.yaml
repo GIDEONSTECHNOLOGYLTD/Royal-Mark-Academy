@@ -1,0 +1,27 @@
+# render.yaml - Configuration for deploying Royal Mark Academy to Render
+services:
+  # Web service for the full-stack application
+  - type: web
+    name: royal-mark-academy
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: node server/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false # This requires manual setup in Render dashboard
+      - key: EMAIL_SERVICE
+        value: gmail # Change if using a different email service
+      - key: EMAIL_USER
+        sync: false # Set this in Render dashboard
+      - key: EMAIL_PASS
+        sync: false # Set this in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true # Auto-generate a secure value
+      - key: COOKIE_SECRET
+        generateValue: true # Auto-generate a secure value
+      - key: DEBUG
+        value: "true" # Enable additional logging (as string)
