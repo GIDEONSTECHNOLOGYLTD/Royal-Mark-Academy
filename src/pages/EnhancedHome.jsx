@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable-next-line no-unused-vars -- needed for JSX motion components */
 import { motion } from 'framer-motion'; // Required for motion.div components
 import { 
   FaGraduationCap, 
