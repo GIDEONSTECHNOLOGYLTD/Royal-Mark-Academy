@@ -3,7 +3,13 @@ import cors from 'cors';
 import fs from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { buildFrontendIfNeeded } from './deploy-handler.js';
+// eslint-disable-next-line no-unused-vars
+import { buildFrontendIfNeeded, checkFrontendFiles } from './deploy-handler.js';
+
+// Flag to track if we've already started building the frontend
+let frontendBuildInProgress = false;
+let frontendBuilt = false;
+
 import nodemailer from 'nodemailer';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
@@ -216,14 +222,21 @@ app.post('/api/application', async (req, res) => {
 // Start the server
 const startServer = async () => {
   // In production, build frontend files if needed
-  if (process.env.NODE_ENV === 'production') {
-    console.log('🔍 Checking for frontend files...');
-    try {
-      await buildFrontendIfNeeded();
-      console.log('✅ Frontend file check/build complete');
-    } catch (err) {
-      console.error('⚠️ Frontend build warning:', err.message);
-      // Continue starting the server even if build fails
+  if (process.env.NODE_ENV === 'production' && !frontendBuilt) {
+    if (!frontendBuildInProgress) {
+      frontendBuildInProgress = true;
+      try {
+        await buildFrontendIfNeeded();
+        frontendBuilt = true;
+        console.log('✅ Frontend file check/build complete');
+      } catch (err) {
+        console.error('⚠️ Frontend build warning:', err.message);
+        // Continue starting the server even if build fails
+      } finally {
+        frontendBuildInProgress = false;
+      }
+    } else {
+      console.log('ℹ️ Frontend build already in progress');
     }
   }
   
