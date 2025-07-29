@@ -70,10 +70,23 @@ if (process.env.NODE_ENV === 'production') {
   }
   
   if (staticPath) {
-    console.log(`Serving static files from: ${staticPath}`);
+    console.log(`✅ Serving static files from: ${staticPath}`);
     app.use(express.static(staticPath));
+    
+    // Serve index.html for any routes not handled by the API
+    // This allows React Router to handle client-side routing
+    app.get('*', (req, res) => {
+      // Skip API routes
+      if (req.path.startsWith('/api')) {
+        return res.status(404).send('API endpoint not found');
+      }
+      
+      // For all other routes, send the React app's index.html
+      console.log(`Serving index.html for route: ${req.path}`);
+      res.sendFile(join(staticPath, 'index.html'));
+    });
   } else {
-    console.warn('WARNING: Could not find frontend build directory. Static files will not be served.');
+    console.warn('⚠️ WARNING: Could not find frontend build directory. Static files will not be served.');
   }
 }
 
