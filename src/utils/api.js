@@ -2,9 +2,11 @@
  * API utility to handle backend requests with automatic dev/prod URL selection
  */
 
-const API_BASE_URL = import.meta.env.MODE === 'development' 
-  ? 'http://localhost:3000/api' 
-  : '/api';
+// Get API base URL from environment variable or use fallbacks
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.MODE === 'development' 
+    ? 'http://localhost:3000/api' 
+    : 'https://your-backend-server.com/api');
 
 /**
  * Send a contact form message
