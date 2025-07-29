@@ -84,7 +84,7 @@ if (process.env.NODE_ENV === 'production') {
 
   // Configure CORS for API-only server to allow requests from Netlify
   const corsOptions = {
-    origin: ['https://royal-mark-academy.netlify.app', 'http://localhost:5173'],
+    origin: ['https://royalmark.netlify.app', 'http://localhost:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -126,7 +126,7 @@ if (process.env.NODE_ENV === 'production') {
         { path: '/api/events', method: 'GET', description: 'Get upcoming school events' },
         { path: '/api/news', method: 'GET', description: 'Get latest school news' }
       ],
-      frontend: 'https://royal-mark-academy.netlify.app',
+      frontend: 'https://royalmark.netlify.app',
       status: 'online'
     });
   });
@@ -145,7 +145,7 @@ if (process.env.NODE_ENV === 'production') {
     res.json({
       message: 'Royal Mark Academy API Server',
       note: 'The frontend has been moved to Netlify for optimal performance',
-      frontendUrl: 'https://royal-mark-academy.netlify.app',
+      frontendUrl: 'https://royalmark.netlify.app',
       apiDocs: `${req.protocol}://${req.get('host')}/api`
     });
   });

@@ -92,7 +92,7 @@ If MongoDB fails to connect:
 #### CORS Issues
 If you see CORS errors in the browser console:
 1. Verify the CORS configuration in `server/index.js`
-2. Ensure allowed origins include your Netlify domain (`https://royal-mark-academy.netlify.app`)
+2. Ensure allowed origins include your Netlify domain (`https://royalmark.netlify.app`)
 3. Check for protocol mismatches (http vs https)
 
 ## Best Practices
@@ -120,7 +120,7 @@ If you see CORS errors in the browser console:
 ## Post-Deployment
 
 After successful deployment:
-1. Test the frontend at `https://royal-mark-academy.netlify.app`
+1. Test the frontend at `https://royalmark.netlify.app`
 2. Verify API connection at `https://royal-mark-academy.onrender.com/api`
 3. Test all forms (contact, admissions) to ensure API connectivity
 4. Verify email notifications are working correctly
