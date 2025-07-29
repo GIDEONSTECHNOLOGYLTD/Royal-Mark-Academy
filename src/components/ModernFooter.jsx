@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import { 
   FaFacebookF, 
   FaTwitter, 
@@ -11,7 +10,8 @@ import {
   FaEnvelope,
   FaPhone,
   FaMapMarkerAlt,
-  FaClock
+  FaClock,
+  FaGraduationCap
 } from 'react-icons/fa';
 import { FiSend } from 'react-icons/fi';
 
@@ -46,7 +46,6 @@ const ModernFooter = () => {
     { name: 'Student Portal', path: '/student' },
   ];
 
-  // Using this in the Admission section below
   const admissionLinks = [
     { name: 'How to Apply', path: '/admissions#apply' },
     { name: 'Requirements', path: '/admissions#requirements' },
@@ -76,23 +75,15 @@ const ModernFooter = () => {
       <div className="bg-yellow-500 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center justify-between">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              className="mb-4 lg:mb-0"
-            >
+            <div className="mb-4 lg:mb-0 fade-in">
               <h3 className="text-2xl font-bold text-blue-900 mb-2">
                 Stay Updated with Royal Mark Academy
               </h3>
               <p className="text-blue-800">
                 Get the latest news, events, and educational insights delivered to your inbox
               </p>
-            </motion.div>
-            <motion.form
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
+            </div>
+            <form
               onSubmit={handleSubscribe}
               className="flex items-center space-x-2"
             >
@@ -104,43 +95,32 @@ const ModernFooter = () => {
                 className="px-4 py-3 rounded-lg text-gray-900 w-64 focus:outline-none focus:ring-2 focus:ring-blue-600"
                 required
               />
-              <motion.button
+              <button
                 type="submit"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors flex items-center space-x-2"
+                className="px-4 py-3 bg-blue-900 rounded-lg text-white font-semibold hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600 flex items-center space-x-2"
               >
                 <span>Subscribe</span>
                 <FiSend />
-              </motion.button>
-            </motion.form>
+              </button>
+            </form>
           </div>
           {subscribed && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-4 text-center text-blue-900 font-semibold"
-            >
+            <div className="mt-4 text-center text-blue-900 font-semibold">
               Thank you for subscribing! We'll keep you updated.
-            </motion.div>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Main Footer Content */}
-      <div className="py-16">
+      {/* Main Footer */}
+      <div className="py-12 border-t border-blue-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* School Info */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="lg:col-span-1"
-            >
+            <div className="lg:col-span-1 fade-in">
               <Link to="/" className="flex items-center space-x-2 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center">
-                  <FaGraduationCap className="text-blue-900 text-lg" />
+                <div className="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center text-blue-900">
+                  <FaGraduationCap className="w-6 h-6" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold">Royal Mark Academy</h3>
@@ -148,40 +128,31 @@ const ModernFooter = () => {
                 </div>
               </Link>
               <p className="text-gray-300 mb-4 leading-relaxed">
-                Royal Mark Academy is a premier educational institution dedicated to fostering academic excellence, 
-                character development, and lifelong learning in a nurturing environment.
+                Providing quality education and nurturing future leaders since 2014. Royal Mark Academy is committed to excellence in all aspects of education.
               </p>
               <div className="flex space-x-3">
                 {socialLinks.map((social, index) => (
-                  <motion.a
+                  <a
                     key={index}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    aria-label={`Follow us on ${social.href.split('.com/')[0].split('://')[1]}`}
                     className={`w-10 h-10 bg-white/10 rounded-full flex items-center justify-center ${social.color} transition-all duration-300`}
                   >
                     {social.icon}
-                  </motion.a>
+                  </a>
                 ))}
               </div>
-            </motion.div>
+            </div>
 
             {/* Quick Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
+            <div className="fade-in">
               <h4 className="text-lg font-semibold mb-4 text-yellow-400">Quick Links</h4>
               <ul className="space-y-2">
-                {quickLinks.map((link, index) => (
-                  <motion.li
+                {quickLinks.map((link) => (
+                  <li
                     key={link.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
                   >
                     <Link
                       to={link.path}
@@ -190,25 +161,18 @@ const ModernFooter = () => {
                       <span className="w-1 h-1 bg-yellow-400 rounded-full"></span>
                       <span>{link.name}</span>
                     </Link>
-                  </motion.li>
+                  </li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
 
             {/* Academic Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
+            <div className="fade-in">
               <h4 className="text-lg font-semibold mb-4 text-yellow-400">Academics</h4>
               <ul className="space-y-2">
-                {academicLinks.map((link, index) => (
-                  <motion.li
+                {academicLinks.map((link) => (
+                  <li
                     key={link.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
                   >
                     <Link
                       to={link.path}
@@ -217,25 +181,18 @@ const ModernFooter = () => {
                       <span className="w-1 h-1 bg-yellow-400 rounded-full"></span>
                       <span>{link.name}</span>
                     </Link>
-                  </motion.li>
+                  </li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
 
             {/* Admissions Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.25 }}
-            >
+            <div className="fade-in">
               <h4 className="text-lg font-semibold mb-4 text-yellow-400">Admissions</h4>
               <ul className="space-y-2">
-                {admissionLinks.map((link, index) => (
-                  <motion.li
+                {admissionLinks.map((link) => (
+                  <li
                     key={link.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
                   >
                     <Link
                       to={link.path}
@@ -244,26 +201,19 @@ const ModernFooter = () => {
                       <span className="w-1 h-1 bg-yellow-400 rounded-full"></span>
                       <span>{link.name}</span>
                     </Link>
-                  </motion.li>
+                  </li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
 
             {/* Contact Info */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
+            <div className="fade-in">
               <h4 className="text-lg font-semibold mb-4 text-yellow-400">Contact Us</h4>
               <ul className="space-y-3">
                 {contactInfo.map((info, index) => (
-                  <motion.li
+                  <li
                     key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-start space-x-3"
+                    className="flex items-start space-x-3 fade-in"
                   >
                     <span className="text-yellow-400 mt-1">{info.icon}</span>
                     {info.href ? (
@@ -276,10 +226,10 @@ const ModernFooter = () => {
                     ) : (
                       <span className="text-gray-300">{info.text}</span>
                     )}
-                  </motion.li>
+                  </li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
@@ -288,20 +238,10 @@ const ModernFooter = () => {
       <div className="bg-blue-950 py-6 border-t border-blue-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="text-gray-400 text-sm mb-4 md:mb-0"
-            >
-              © {new Date().getFullYear()} Royal Mark Academy. All rights reserved.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="flex space-x-6 text-sm"
-            >
+            <p className="text-gray-400 text-sm mb-4 md:mb-0 fade-in">
+              &copy; {new Date().getFullYear()} Royal Mark Academy. All rights reserved.
+            </p>
+            <div className="flex space-x-6 text-sm fade-in">
               <Link to="/privacy" className="text-gray-400 hover:text-yellow-400 transition-colors">
                 Privacy Policy
               </Link>
@@ -311,7 +251,7 @@ const ModernFooter = () => {
               <Link to="/sitemap" className="text-gray-400 hover:text-yellow-400 transition-colors">
                 Sitemap
               </Link>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
