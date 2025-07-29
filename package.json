@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "mkdir -p /opt/render/project/src/dist && cp -r static-placeholder/* /opt/render/project/src/dist/",
-    "frontend-build": "npm install vite @vitejs/plugin-react tailwindcss postcss autoprefixer --no-save && npx vite build",
+    "build": "node render-build.js || (mkdir -p /opt/render/project/src/dist && cp -r static-placeholder/* /opt/render/project/src/dist/)",
+    "frontend-build": "npm install vite@4.3.9 @vitejs/plugin-react@4.0.0 tailwindcss postcss autoprefixer --no-save && npx vite build",
     "copy-dist": "mkdir -p /opt/render/project/src/dist && cp -r dist/* /opt/render/project/src/dist/ 2>/dev/null || echo 'Not on Render, skipping copy'",
     "render-build": "node render-build.js",
     "lint": "eslint .",

@@ -19,15 +19,37 @@ fs.writeFileSync(
 );
 console.log('✅ Created .env.production with API URL');
 
-// Build frontend using node_modules path
+// Ensure build dependencies are installed first
 try {
-  console.log('🏗️ Building frontend with Vite...');
+  console.log('📦 Installing build dependencies first...');
   
-  // Run build using direct path to vite in node_modules
-  execSync('node ./node_modules/vite/bin/vite.js build', {
+  // Install Vite and required plugins explicitly with exact versions
+  execSync('npm install --no-save vite@4.3.9 @vitejs/plugin-react@4.0.0 tailwindcss postcss autoprefixer', {
     cwd: __dirname,
     stdio: 'inherit'
   });
+  
+  console.log('✅ Build dependencies installed');
+  console.log('🏗️ Building frontend with Vite...');
+  
+  // Try different approaches to run Vite build
+  try {
+    // First approach: use npx
+    console.log('Trying build with npx...');
+    execSync('npx vite build', {
+      cwd: __dirname,
+      stdio: 'inherit'
+    });
+  } catch (npxError) {
+    console.log(`⚠️ npx approach failed: ${npxError.message}`);
+    console.log('Trying direct node_modules path...');
+    
+    // Second approach: direct node_modules path
+    execSync('node ./node_modules/vite/bin/vite.js build', {
+      cwd: __dirname,
+      stdio: 'inherit'
+    });
+  }
   
   console.log('✅ Frontend build successful!');
   
