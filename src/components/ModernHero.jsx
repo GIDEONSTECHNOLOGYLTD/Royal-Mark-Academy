@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaPlay, FaPause, FaChevronRight, FaGraduationCap, FaSchool, FaUniversity } from 'react-icons/fa';
+import { FaChevronRight, FaPause, FaPlay, FaGraduationCap, FaUniversity, FaSchool, FaBookOpen, FaAward } from 'react-icons/fa';
+// Using icon-based solution instead of problematic image files for Safari compatibility
 
 const ModernHero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   
-  // Simplified slides data
+  // Enhanced slides data with additional icons for better visibility
   const slides = [
     {
       id: 1,
       title: "Excellence in Education",
       subtitle: "Nurturing future leaders since 2014",
-      icon: <FaUniversity className="text-6xl text-yellow-400" />,
+      icon: <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <FaUniversity style={{ fontSize: '5rem', color: '#FFCC00', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.4))' }} />
+            </div>,
       ctaText: "Explore Programs",
       ctaLink: "/academics"
     },
@@ -20,7 +23,9 @@ const ModernHero = () => {
       id: 2,
       title: "State-of-the-Art Facilities",
       subtitle: "Modern learning environment",
-      icon: <FaSchool className="text-6xl text-yellow-400" />,
+      icon: <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <FaSchool style={{ fontSize: '5rem', color: '#FFCC00', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.4))' }} />
+            </div>,
       ctaText: "Tour Campus",
       ctaLink: "/facilities"
     },
@@ -28,7 +33,9 @@ const ModernHero = () => {
       id: 3,
       title: "Holistic Development",
       subtitle: "Education for mind, body, and character",
-      icon: <FaGraduationCap className="text-6xl text-yellow-400" />,
+      icon: <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <FaBookOpen style={{ fontSize: '5rem', color: '#FFCC00', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.4))' }} />
+            </div>,
       ctaText: "Learn More",
       ctaLink: "/about"
     }
@@ -50,31 +57,78 @@ const ModernHero = () => {
   const goToSlide = (index) => setCurrentSlide(index);
 
   return (
-    <section className="relative h-screen overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #1e3a8a, #3730a3)' }}>
-      {/* Background Overlay */}
-      <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}></div>
+    <section className="relative h-screen overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #1e3a8a, #3730a3)', WebkitBackgroundImage: '-webkit-linear-gradient(bottom right, #1e3a8a, #3730a3)' }}>
+      {/* Background Overlay with Extra Contrast */}
+      <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}></div>
       
       {/* Content */}
       <div className="relative z-10 h-full flex items-center justify-center">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="text-center">
-            {/* School Badge */}
-            <div className="mx-auto mb-6 h-24 w-24 rounded-full bg-yellow-500 flex items-center justify-center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <FaGraduationCap className="text-blue-900 text-5xl" />
+            {/* Enhanced School Logo for Safari */}
+            <div className="mx-auto mb-6" style={{ width: '180px', height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {/* Fixed Logo with Fallback Icon */}
+              <div style={{ 
+                width: '100%', 
+                height: '100%', 
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: '#FFCC00',
+                borderRadius: '50%',
+                padding: '3px',
+                boxShadow: '0 8px 16px rgba(0,0,0,0.5)'
+              }}>
+                <FaGraduationCap style={{ 
+                  fontSize: '6rem', 
+                  color: '#1e3a8a',
+                  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
+                }} />
+              </div>
             </div>
             
-            {/* Main Heading */}
-            <h1 className="text-5xl md:text-7xl font-bold mb-4 text-white" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
+            {/* Main Heading with Strong Contrast */}
+            <h1 
+              className="text-5xl md:text-7xl font-bold mb-4 text-white" 
+              style={{ 
+                textShadow: '0 2px 4px rgba(0,0,0,1), 0 4px 8px rgba(0,0,0,0.8), 0 0 0 4px rgba(0,0,0,0.4)',
+                WebkitTextStroke: '1px rgba(0,0,0,0.3)',
+                letterSpacing: '1px'
+              }}
+            >
               Royal Mark Academy
             </h1>
             
-            {/* Current Slide Content */}
-            <div key={slides[currentSlide].id} style={{ opacity: 1, transition: 'opacity 0.5s ease-in-out' }}>
-              <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white" style={{ textShadow: '0 2px 3px rgba(0,0,0,0.7)' }}>
+            {/* Current Slide Content with Enhanced Visibility */}
+            <div 
+              key={slides[currentSlide].id} 
+              style={{ 
+                opacity: 1,
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                padding: '20px',
+                borderRadius: '12px',
+                boxShadow: '0 8px 16px rgba(0,0,0,0.4)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)'
+              }}
+            >
+              <h2 
+                className="text-3xl md:text-5xl font-bold mb-4 text-white" 
+                style={{ 
+                  textShadow: '0 2px 4px rgba(0,0,0,1), 0 0 0 2px rgba(0,0,0,0.3)',
+                  WebkitTextStroke: '0.5px rgba(0,0,0,0.3)'
+                }}
+              >
                 {slides[currentSlide].title}
               </h2>
               
-              <p className="text-xl md:text-2xl mb-8 text-white font-medium" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.7)' }}>
+              <p 
+                className="text-xl md:text-2xl mb-8 text-white font-medium" 
+                style={{ 
+                  textShadow: '0 2px 3px rgba(0,0,0,1)',
+                  fontWeight: 600
+                }}
+              >
                 {slides[currentSlide].subtitle}
               </p>
 
