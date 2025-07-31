@@ -1,199 +1,104 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaPlay, FaPause, FaChevronRight, FaGraduationCap, FaSchool, FaUniversity, FaBookReader } from 'react-icons/fa';
+import { FaPlay, FaPause, FaChevronRight, FaGraduationCap, FaSchool, FaUniversity } from 'react-icons/fa';
 
 const ModernHero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [scrollY, setScrollY] = useState(0);
-  const intervalRef = useRef(null);
-
-  // Default background gradient for slides without images
-  const defaultBg = "bg-gradient-to-br from-blue-900 to-indigo-800";
-
+  
+  // Simplified slides data
   const slides = [
     {
       id: 1,
       title: "Excellence in Education",
-      subtitle: "Nurturing future leaders with world-class education since 2014",
-      description: "Discover why Royal Mark Academy is the premier choice for holistic education in Abeokuta",
-      image: "/images/campus/classroom.jpg",
+      subtitle: "Nurturing future leaders since 2014",
       icon: <FaUniversity className="text-6xl text-yellow-400" />,
-      ctaText: "Explore Our Programs",
-      ctaLink: "/academics",
-      stats: { students: "1200+", teachers: "85+", years: "10+" }
+      ctaText: "Explore Programs",
+      ctaLink: "/academics"
     },
     {
       id: 2,
       title: "State-of-the-Art Facilities",
-      subtitle: "Modern learning environment designed for 21st century education",
-      description: "Experience our cutting-edge facilities that inspire creativity and innovation",
-      image: "/images/school-building.jpg",
+      subtitle: "Modern learning environment",
       icon: <FaSchool className="text-6xl text-yellow-400" />,
-      ctaText: "Tour Our Campus",
-      ctaLink: "/facilities",
-      stats: { labs: "12", classrooms: "45", library: "5000+" }
+      ctaText: "Tour Campus",
+      ctaLink: "/facilities"
     },
     {
       id: 3,
       title: "Holistic Development",
-      subtitle: "Education that nurtures mind, body, and character",
-      description: "We develop well-rounded individuals ready to excel in a global society",
-      image: "/images/campus/library.jpg",
-      icon: <FaBookReader className="text-6xl text-yellow-400" />,
-      ctaText: "Learn Our Approach",
-      ctaLink: "/about",
-      stats: { sports: "15", clubs: "20", awards: "50+" }
+      subtitle: "Education for mind, body, and character",
+      icon: <FaGraduationCap className="text-6xl text-yellow-400" />,
+      ctaText: "Learn More",
+      ctaLink: "/about"
     }
   ];
 
+  // Auto-advance slides
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
+    let timer;
     if (isPlaying) {
-      intervalRef.current = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % slides.length);
+      timer = setInterval(() => {
+        setCurrentSlide(prev => (prev + 1) % slides.length);
       }, 5000);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
     }
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
+    return () => clearInterval(timer);
   }, [isPlaying, slides.length]);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
-
-  const goToSlide = (index) => {
-    setCurrentSlide(index);
-  };
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  const goToSlide = (index) => setCurrentSlide(index);
 
   return (
-    <section className="relative h-screen overflow-hidden">
-      {/* Background Images with Parallax Effect */}
-      <div className="relative h-full w-full">
-        {slides.map((slide, index) => (
-          <div
-            key={slide.id}
-            style={{
-              opacity: index === currentSlide ? 1 : 0,
-              transform: `scale(${index === currentSlide ? 1 + scrollY * 0.0002 : 1.1})`,
-              transition: 'opacity 1.2s ease-in-out, transform 1.2s ease-in-out',
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-            }}
-          >
-            <div className={`absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 ${!slide.image ? defaultBg : ''}`} />
-            {slide.image && (
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentNode.classList.add(defaultBg);
-                }}
-              />
-            )}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-purple-900/60" />
-          </div>
-        ))}
-      </div>
-
-      {/* Floating Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-white/20 rounded-full floating-particle"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDuration: `${3 + Math.random() * 2}s`,
-              animationDelay: `${Math.random() * 2}s`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Content Overlay */}
+    <section className="relative h-screen overflow-hidden bg-gradient-to-br from-blue-900 to-indigo-800">
+      {/* Background Overlay */}
+      <div className="absolute inset-0 bg-black/50"></div>
+      
+      {/* Content */}
       <div className="relative z-10 h-full flex items-center justify-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="text-center max-w-4xl mx-auto content-animation">
-            {/* School Logo or Badge */}
-            <div className="relative">
-              <img 
-                src="/images/royal-mark-logo.png" 
-                alt="Royal Mark Academy Logo" 
-                className="h-28 md:h-32 mx-auto mb-6 filter drop-shadow-xl" 
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  document.querySelector('.fallback-logo').style.display = 'flex';
-                }}
-              />
-            </div>
-            
-            {/* Fallback Logo */}
-            <div className="fallback-logo hidden mx-auto mb-6 h-28 w-28 rounded-full bg-yellow-500 flex items-center justify-center">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="text-center">
+            {/* School Badge */}
+            <div className="mx-auto mb-6 h-24 w-24 rounded-full bg-yellow-500 flex items-center justify-center">
               <FaGraduationCap className="text-blue-900 text-5xl" />
             </div>
             
-            {/* Main Content */}
+            {/* Main Heading */}
             <h1 className="text-5xl md:text-7xl font-bold mb-4 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-              {slides[currentSlide].title}
+              Royal Mark Academy
             </h1>
             
-            <p className="text-xl md:text-2xl mb-4 text-white font-medium drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)]">
-              {slides[currentSlide].subtitle}
-            </p>
-            
-            <p className="text-lg md:text-xl mb-8 text-white font-medium max-w-3xl mx-auto drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)]">
-              {slides[currentSlide].description}
-            </p>
+            {/* Current Slide Content */}
+            <div key={slides[currentSlide].id} className="animate-fadeIn">
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)]">
+                {slides[currentSlide].title}
+              </h2>
+              
+              <p className="text-xl md:text-2xl mb-8 text-white font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+                {slides[currentSlide].subtitle}
+              </p>
 
-            {/* Stats Counter */}
-            <div className="flex flex-wrap justify-center gap-8 md:gap-12 mb-10 stats-animation">
-              {Object.entries(slides[currentSlide].stats).map(([key, value]) => (
-                <div key={key} className="text-center">
-                  <div className="text-4xl font-bold text-yellow-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">{value}</div>
-                  <div className="text-sm font-semibold text-white uppercase tracking-wider drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
-                    {key.replace(/([A-Z])/g, ' $1').trim()}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Call to Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
-              <Link
-                to={slides[currentSlide].ctaLink}
-                className="group inline-flex items-center px-8 py-4 bg-yellow-500 text-blue-900 font-bold text-lg rounded-full hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
-              >
-                {slides[currentSlide].ctaText}
-                <FaChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                to="/admissions"
-                className="inline-flex items-center px-8 py-4 border-2 border-white text-white font-bold text-lg rounded-full hover:bg-white hover:text-blue-900 transition-all duration-300"
-              >
-                Apply Now
-              </Link>
+              {/* Icon */}
+              <div className="mb-8">
+                {slides[currentSlide].icon}
+              </div>
+              
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
+                <Link
+                  to={slides[currentSlide].ctaLink}
+                  className="group inline-flex items-center px-8 py-4 bg-yellow-500 text-blue-900 font-bold text-lg rounded-full hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
+                >
+                  {slides[currentSlide].ctaText}
+                  <FaChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  to="/admissions"
+                  className="inline-flex items-center px-8 py-4 border-2 border-white text-white font-bold text-lg rounded-full hover:bg-white hover:text-blue-900 transition-all duration-300"
+                >
+                  Apply Now
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -250,13 +155,6 @@ const ModernHero = () => {
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
-        </div>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 bounce-animation">
-        <div className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center shadow-lg">
-          <div className="w-1 h-3 bg-white/80 rounded-full mt-2" />
         </div>
       </div>
     </section>
