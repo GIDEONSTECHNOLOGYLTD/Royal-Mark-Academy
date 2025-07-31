@@ -14,7 +14,7 @@ const ModernHero = () => {
       title: "Excellence in Education",
       subtitle: "Nurturing future leaders with world-class education since 2014",
       description: "Discover why Royal Mark Academy is the premier choice for holistic education in Abeokuta",
-      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1920&auto=format&fit=crop",
+      image: "/images/campus/classroom.jpg",
       ctaText: "Explore Our Programs",
       ctaLink: "/academics",
       stats: { students: "1200+", teachers: "85+", years: "10+" }
@@ -24,7 +24,7 @@ const ModernHero = () => {
       title: "State-of-the-Art Facilities",
       subtitle: "Modern learning environment designed for 21st century education",
       description: "Experience our cutting-edge facilities that inspire creativity and innovation",
-      image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=1920&auto=format&fit=crop",
+      image: "/images/school-building.jpg",
       ctaText: "Tour Our Campus",
       ctaLink: "/facilities",
       stats: { labs: "12", classrooms: "45", library: "5000+" }
@@ -34,7 +34,7 @@ const ModernHero = () => {
       title: "Holistic Development",
       subtitle: "Education that nurtures mind, body, and character",
       description: "We develop well-rounded individuals ready to excel in a global society",
-      image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1920&auto=format&fit=crop",
+      image: "/images/campus/library.jpg",
       ctaText: "Learn Our Approach",
       ctaLink: "/about",
       stats: { sports: "15", clubs: "20", awards: "50+" }
@@ -93,13 +93,13 @@ const ModernHero = () => {
               height: '100%',
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
             <img
               src={slide.image}
               alt={slide.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 to-purple-900/20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-purple-900/30" />
           </div>
         ))}
       </div>
@@ -123,57 +123,52 @@ const ModernHero = () => {
       {/* Content Overlay */}
       <div className="relative z-10 h-full flex items-center justify-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div key={currentSlide} className="text-center text-white slide-in-animation">
-              {/* School Badge */}
-              <div className="mb-6 badge-animation">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-yellow-500 rounded-full mb-4">
-                  <FaGraduationCap className="text-blue-900 text-3xl" />
-                </div>
-              </div>
+          <div className="text-center max-w-4xl mx-auto content-animation">
+            {/* School Logo */}
+            <img src="/images/royal-mark-logo.png" alt="Royal Mark Academy Logo" 
+                 className="h-28 md:h-32 mx-auto mb-6 filter drop-shadow-xl" />
+            
+            {/* Main Content */}
+            <h1 className="text-5xl md:text-7xl font-bold mb-4 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              {slides[currentSlide].title}
+            </h1>
+            
+            <p className="text-xl md:text-2xl mb-4 text-white font-medium drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)]">
+              {slides[currentSlide].subtitle}
+            </p>
+            
+            <p className="text-lg md:text-xl mb-8 text-white font-medium max-w-3xl mx-auto drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)]">
+              {slides[currentSlide].description}
+            </p>
 
-              {/* Main Title */}
-              <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight title-animation">
-                <span className="bg-gradient-to-r from-white to-yellow-300 bg-clip-text text-transparent">
-                  {slides[currentSlide].title}
-                </span>
-              </h1>
-
-              {/* Subtitle */}
-              <p className="text-xl md:text-2xl mb-4 text-gray-200 font-light subtitle-animation">
-                {slides[currentSlide].subtitle}
-              </p>
-
-              {/* Description */}
-              <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto text-gray-300 description-animation">
-                {slides[currentSlide].description}
-              </p>
-
-              {/* Stats */}
-              <div className="flex flex-wrap justify-center gap-8 mb-12 stats-animation">
-                {Object.entries(slides[currentSlide].stats).map(([key, value]) => (
-                  <div key={key} className="text-center">
-                    <div className="text-3xl font-bold text-yellow-400">{value}</div>
-                    <div className="text-sm text-gray-300 uppercase tracking-wider">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
+            {/* Stats Counter */}
+            <div className="flex flex-wrap justify-center gap-8 md:gap-12 mb-10 stats-animation">
+              {Object.entries(slides[currentSlide].stats).map(([key, value]) => (
+                <div key={key} className="text-center">
+                  <div className="text-4xl font-bold text-yellow-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">{value}</div>
+                  <div className="text-sm font-semibold text-white uppercase tracking-wider drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+                    {key.replace(/([A-Z])/g, ' $1').trim()}
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
+            </div>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center cta-animation">
-                <Link
-                  to={slides[currentSlide].ctaLink}
-                  className="group inline-flex items-center px-8 py-4 bg-yellow-500 text-blue-900 font-bold text-lg rounded-full hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
-                >
-                  {slides[currentSlide].ctaText}
-                  <FaChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link
-                  to="/admissions"
-                  className="inline-flex items-center px-8 py-4 border-2 border-white text-white font-bold text-lg rounded-full hover:bg-white hover:text-blue-900 transition-all duration-300"
-                >
-                  Apply Now
-                </Link>
-              </div>
+            {/* Call to Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
+              <Link
+                to={slides[currentSlide].ctaLink}
+                className="group inline-flex items-center px-8 py-4 bg-yellow-500 text-blue-900 font-bold text-lg rounded-full hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
+              >
+                {slides[currentSlide].ctaText}
+                <FaChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                to="/admissions"
+                className="inline-flex items-center px-8 py-4 border-2 border-white text-white font-bold text-lg rounded-full hover:bg-white hover:text-blue-900 transition-all duration-300"
+              >
+                Apply Now
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -184,7 +179,7 @@ const ModernHero = () => {
           {/* Previous Button */}
           <button
             onClick={prevSlide}
-            className="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-all duration-300"
+            className="p-2 bg-white/30 backdrop-blur-sm rounded-full text-white hover:bg-white/50 transition-all duration-300 shadow-lg"
             aria-label="Previous slide"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,7 +190,7 @@ const ModernHero = () => {
           {/* Play/Pause Button */}
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-all duration-300"
+            className="p-2 bg-white/30 backdrop-blur-sm rounded-full text-white hover:bg-white/50 transition-all duration-300 shadow-lg"
             aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
           >
             {isPlaying ? <FaPause className="w-4 h-4" /> : <FaPlay className="w-4 h-4" />}
@@ -204,7 +199,7 @@ const ModernHero = () => {
           {/* Next Button */}
           <button
             onClick={nextSlide}
-            className="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-all duration-300"
+            className="p-2 bg-white/30 backdrop-blur-sm rounded-full text-white hover:bg-white/50 transition-all duration-300 shadow-lg"
             aria-label="Next slide"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,10 +216,10 @@ const ModernHero = () => {
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              className={`w-3 h-3 rounded-full transition-all duration-300 shadow-md ${
                 index === currentSlide
                   ? 'bg-yellow-500 w-8'
-                  : 'bg-white/40 hover:bg-white/60'
+                  : 'bg-white/50 hover:bg-white/70'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
@@ -234,8 +229,8 @@ const ModernHero = () => {
 
       {/* Scroll Indicator */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 bounce-animation">
-        <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-white/70 rounded-full mt-2" />
+        <div className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center shadow-lg">
+          <div className="w-1 h-3 bg-white/80 rounded-full mt-2" />
         </div>
       </div>
     </section>
