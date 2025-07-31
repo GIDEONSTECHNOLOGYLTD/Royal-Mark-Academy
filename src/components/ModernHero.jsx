@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { FaPlay, FaPause, FaChevronRight, FaGraduationCap } from 'react-icons/fa';
+import { FaPlay, FaPause, FaChevronRight, FaGraduationCap, FaSchool, FaUniversity, FaBookReader } from 'react-icons/fa';
 
 const ModernHero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [scrollY, setScrollY] = useState(0);
   const intervalRef = useRef(null);
+
+  // Default background gradient for slides without images
+  const defaultBg = "bg-gradient-to-br from-blue-900 to-indigo-800";
 
   const slides = [
     {
@@ -15,6 +18,7 @@ const ModernHero = () => {
       subtitle: "Nurturing future leaders with world-class education since 2014",
       description: "Discover why Royal Mark Academy is the premier choice for holistic education in Abeokuta",
       image: "/images/campus/classroom.jpg",
+      icon: <FaUniversity className="text-6xl text-yellow-400" />,
       ctaText: "Explore Our Programs",
       ctaLink: "/academics",
       stats: { students: "1200+", teachers: "85+", years: "10+" }
@@ -25,6 +29,7 @@ const ModernHero = () => {
       subtitle: "Modern learning environment designed for 21st century education",
       description: "Experience our cutting-edge facilities that inspire creativity and innovation",
       image: "/images/school-building.jpg",
+      icon: <FaSchool className="text-6xl text-yellow-400" />,
       ctaText: "Tour Our Campus",
       ctaLink: "/facilities",
       stats: { labs: "12", classrooms: "45", library: "5000+" }
@@ -35,6 +40,7 @@ const ModernHero = () => {
       subtitle: "Education that nurtures mind, body, and character",
       description: "We develop well-rounded individuals ready to excel in a global society",
       image: "/images/campus/library.jpg",
+      icon: <FaBookReader className="text-6xl text-yellow-400" />,
       ctaText: "Learn Our Approach",
       ctaLink: "/about",
       stats: { sports: "15", clubs: "20", awards: "50+" }
@@ -93,13 +99,19 @@ const ModernHero = () => {
               height: '100%',
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
-            <img
-              src={slide.image}
-              alt={slide.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-purple-900/30" />
+            <div className={`absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 ${!slide.image ? defaultBg : ''}`} />
+            {slide.image && (
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.parentNode.classList.add(defaultBg);
+                }}
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-purple-900/60" />
           </div>
         ))}
       </div>
@@ -124,9 +136,23 @@ const ModernHero = () => {
       <div className="relative z-10 h-full flex items-center justify-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="text-center max-w-4xl mx-auto content-animation">
-            {/* School Logo */}
-            <img src="/images/royal-mark-logo.png" alt="Royal Mark Academy Logo" 
-                 className="h-28 md:h-32 mx-auto mb-6 filter drop-shadow-xl" />
+            {/* School Logo or Badge */}
+            <div className="relative">
+              <img 
+                src="/images/royal-mark-logo.png" 
+                alt="Royal Mark Academy Logo" 
+                className="h-28 md:h-32 mx-auto mb-6 filter drop-shadow-xl" 
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  document.querySelector('.fallback-logo').style.display = 'flex';
+                }}
+              />
+            </div>
+            
+            {/* Fallback Logo */}
+            <div className="fallback-logo hidden mx-auto mb-6 h-28 w-28 rounded-full bg-yellow-500 flex items-center justify-center">
+              <FaGraduationCap className="text-blue-900 text-5xl" />
+            </div>
             
             {/* Main Content */}
             <h1 className="text-5xl md:text-7xl font-bold mb-4 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
