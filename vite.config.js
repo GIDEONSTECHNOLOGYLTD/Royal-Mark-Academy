@@ -1,17 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-// Replicate CommonJS __dirname in ES modules
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
-    // Ensure we properly resolve directories
-    root: dirname(__dirname),
     base: './',
     // Optimize build settings
     build: {
@@ -22,7 +15,7 @@ export default defineConfig(({ mode }) => {
       minify: 'terser',
       target: 'es2018',
       rollupOptions: {
-        input: resolve(__dirname, 'index.html'),
+        input: 'index.html',
       },
     },
     css: {
