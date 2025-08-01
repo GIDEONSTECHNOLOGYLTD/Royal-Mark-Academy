@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaChevronRight, FaPause, FaPlay, FaGraduationCap, FaUniversity, FaSchool, FaBookOpen, FaAward } from 'react-icons/fa';
-// Using icon-based solution instead of problematic image files for Safari compatibility
+
+// Import actual school images for background (bypassing Safari image loading issues)
+const schoolImages = [
+  '/images/campus/campus-main.jpg',
+  '/images/campus/classroom.jpg',
+  '/images/campus/library.jpg'
+];
 
 const ModernHero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -57,9 +63,25 @@ const ModernHero = () => {
   const goToSlide = (index) => setCurrentSlide(index);
 
   return (
-    <section className="relative h-screen overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #1e3a8a, #3730a3)', WebkitBackgroundImage: '-webkit-linear-gradient(bottom right, #1e3a8a, #3730a3)' }}>
-      {/* Background Overlay with Extra Contrast */}
-      <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}></div>
+    <section className="relative h-screen overflow-hidden">
+      {/* Fixed Background Image for Safari Compatibility */}
+      <div 
+        className="absolute inset-0" 
+        style={{ 
+          backgroundImage: `url(${schoolImages[currentSlide % schoolImages.length]})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0
+        }}
+      ></div>
+      
+      {/* Background Overlay with Maximum Contrast for Safari */}
+      <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 1 }}></div>
       
       {/* Content */}
       <div className="relative z-10 h-full flex items-center justify-center">
@@ -89,11 +111,18 @@ const ModernHero = () => {
             
             {/* Main Heading with Strong Contrast */}
             <h1 
-              className="text-5xl md:text-7xl font-bold mb-4 text-white" 
+              className="text-5xl md:text-7xl font-bold mb-4" 
               style={{ 
-                textShadow: '0 2px 4px rgba(0,0,0,1), 0 4px 8px rgba(0,0,0,0.8), 0 0 0 4px rgba(0,0,0,0.4)',
-                WebkitTextStroke: '1px rgba(0,0,0,0.3)',
-                letterSpacing: '1px'
+                color: 'white',
+                backgroundColor: 'rgba(0,0,0,0.6)',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                display: 'inline-block',
+                textShadow: '0 2px 4px rgba(0,0,0,1), 0 4px 8px rgba(0,0,0,0.8)',
+                WebkitTextStroke: '1px rgba(0,0,0,0.5)',
+                WebkitTextFillColor: 'white', /* Safari specific */
+                letterSpacing: '1px',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.5)'
               }}
             >
               Royal Mark Academy
@@ -104,29 +133,45 @@ const ModernHero = () => {
               key={slides[currentSlide].id} 
               style={{ 
                 opacity: 1,
-                backgroundColor: 'rgba(0,0,0,0.5)',
-                padding: '20px',
+                backgroundColor: 'rgba(0,0,0,0.85)',
+                padding: '24px',
                 borderRadius: '12px',
-                boxShadow: '0 8px 16px rgba(0,0,0,0.4)',
-                backdropFilter: 'blur(4px)',
-                WebkitBackdropFilter: 'blur(4px)'
+                boxShadow: '0 12px 24px rgba(0,0,0,0.8)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                width: '100%',
+                maxWidth: '700px',
+                margin: '0 auto'
               }}
             >
               <h2 
-                className="text-3xl md:text-5xl font-bold mb-4 text-white" 
+                className="text-xl md:text-2xl font-bold mb-6" 
                 style={{ 
-                  textShadow: '0 2px 4px rgba(0,0,0,1), 0 0 0 2px rgba(0,0,0,0.3)',
-                  WebkitTextStroke: '0.5px rgba(0,0,0,0.3)'
+                  color: '#FFCC00',
+                  backgroundColor: 'rgba(0,0,0,0.6)',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  display: 'inline-block',
+                  textShadow: '0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5)',
+                  WebkitTextStroke: '0.5px rgba(0,0,0,0.5)', /* Safari specific */
+                  letterSpacing: '0.5px',
+                  marginTop: '10px'
                 }}
               >
                 {slides[currentSlide].title}
               </h2>
               
               <p 
-                className="text-xl md:text-2xl mb-8 text-white font-medium" 
+                className="text-xl md:text-2xl mb-8 font-medium" 
                 style={{ 
-                  textShadow: '0 2px 3px rgba(0,0,0,1)',
-                  fontWeight: 600
+                  color: 'white',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  display: 'inline-block',
+                  textShadow: '0 2px 3px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,0.8)',
+                  fontWeight: 700,
+                  WebkitTextStroke: '0.3px rgba(0,0,0,0.4)',
+                  WebkitTextFillColor: 'white'
                 }}
               >
                 {slides[currentSlide].subtitle}
@@ -141,22 +186,29 @@ const ModernHero = () => {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '2rem' }} className="sm:flex-row">
                 <Link
                   to={slides[currentSlide].ctaLink}
-                  className="group inline-flex items-center px-8 py-4 bg-yellow-500 text-blue-900 font-bold text-lg rounded-full"
+                  className="group inline-flex items-center px-8 py-4 font-bold text-lg rounded-full"
                   style={{ 
                     display: 'inline-flex',
                     alignItems: 'center',
+                    backgroundColor: '#FFCC00',
+                    color: '#1e3a8a',
+                    border: '2px solid #1e3a8a',
                     transition: 'all 0.3s ease',
-                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                    boxShadow: '0 8px 12px rgba(0,0,0,0.4)',
+                    fontWeight: 800,
+                    letterSpacing: '0.5px',
+                    width: '220px',
+                    justifyContent: 'center'
                   }}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor = '#facc15';
+                    e.currentTarget.style.backgroundColor = 'white';
                     e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.boxShadow = '0 10px 15px rgba(0,0,0,0.2)';
+                    e.currentTarget.style.boxShadow = '0 12px 20px rgba(0,0,0,0.5)';
                   }}
                   onMouseOut={(e) => {
-                    e.currentTarget.style.backgroundColor = '#eab308';
+                    e.currentTarget.style.backgroundColor = '#FFCC00';
                     e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                    e.currentTarget.style.boxShadow = '0 8px 12px rgba(0,0,0,0.4)';
                   }}
                 >
                   {slides[currentSlide].ctaText}
@@ -190,26 +242,32 @@ const ModernHero = () => {
       {/* Navigation Controls */}
       <div style={{ position: 'absolute', bottom: '2rem', left: '50%', transform: 'translateX(-50%)', zIndex: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          {/* Previous Button */}
+          {/* Previous Button with Safari-specific styling */}
           <button
             onClick={prevSlide}
             style={{
-              padding: '0.5rem',
-              backgroundColor: 'rgba(255, 255, 255, 0.3)',
-              backdropFilter: 'blur(4px)',
-              WebkitBackdropFilter: 'blur(4px)', /* Safari specific */
-              borderRadius: '9999px',
+              padding: '1rem',
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              border: '2px solid white',
+              borderRadius: '50%',
               color: 'white',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              transition: 'all 0.3s ease',
-              border: 'none',
+              boxShadow: '0 6px 12px rgba(0, 0, 0, 0.5)',
+              transition: 'all 0.2s ease',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              width: '50px',
+              height: '50px'
             }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = '#FFCC00';
+              e.currentTarget.style.color = '#1e3a8a';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+              e.currentTarget.style.color = 'white';
+            }}
             aria-label="Previous slide"
           >
             <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
